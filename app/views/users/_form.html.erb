@@ -1,0 +1,27 @@
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+
+    <%= form_with(model: @user, local: true) do |f| %>
+    
+      <%= render 'shared/error_messages', object: @user %>
+      
+      <%= f.label :name, class: "label-#{yield(:label_class)}" %>
+      <%= f.text_field :name, class: "form-control" %>
+      
+      <%= f.label :email, class: "label-#{yield(:label_class)}" %>
+      <%= f.email_field :email, class: "form-control" %>
+      
+      <%= f.label :department, class: "label-#{yield(:label_class)}" %>
+      <%= f.text_field :department, class: "form-control" %>
+      
+      <%= f.label :password, class: "label-#{yield(:label_class)}" %>
+      <%= f.password_field :password, class: "form-control" %>
+      
+      <%= f.label :password_confirmation, class: "label-#{yield(:label_class)}" %>
+      <%= f.password_field :password_confirmation, class: "form-control" %>
+      
+      <%= f.submit yield(:submit_class), class: "btn btn-primary btn-block btn-#{yield(:label_class)}" %>
+    <% end %>
+
+ </div>
+</div>

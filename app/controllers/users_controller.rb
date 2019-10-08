@@ -10,6 +10,15 @@ class UsersController < ApplicationController
     @users = User.paginate(page: params[:page], per_page: 5).search(params[:search])
   end
 
+  def index_working
+    @users = []
+    User.all.each do |user|
+      if user.attendances.any?{|a| ( Date.today && !a.started_at.blank? && a.finished_at.blank?)}
+        @users.push(user)
+      end
+    end
+  end
+  
   def show
     @worked_sum = @attendances.where.not(started_at: nil).count
   end

@@ -12,45 +12,43 @@
   <p><%= link_to "削除", user, data: { confirm: "削除してよろしいですか？"}, class: "btn btn-primary", method: :delete %></p>
   <div class="card">
     <div class="card-head gray">
-  <a class="btn btn-primary btn-lg" data-toggle="collapse" href="#collapse<%= user.id %>" 
-    role="button" aria-expanded="false" aria-controls="collapse<% user.id %>">編集</a>
-    
+      <a class="btn btn-primary btn-lg" data-toggle="collapse" href="#collapse<%= user.id %>" 
+        role="button" aria-expanded="false" aria-controls="collapse<% user.id %>">編集</a>
     </div>  
     
     <div class="card-body">
-    
-    <div class="collapse" id="collapse<%= user.id %>">
-      <%= form_with( model: user, local: true) do |f| %>
-      
-      <%= f.label :name, class: "label-form" %>
-      <%= f.text_field :name, class: "form-control" %>
-      
-      <%= f.label :email, class: "label-form" %>
-      <%= f.email_field :email, class: "form-control" %>
-      
-      <%= f.label :affiliation, "所属", class: "label-form" %>
-      <%= f.text_field :affiliation, class: "form-control" %>
-      
-      <%= f.label :employee_number, "社員番号", class: "label-form" %>
-      <%= f.number_field :employee_number, class: "form-control" %>
-      
-      <%= f.label :uid, "カードID", class: "label-form" %>
-      <%= f.text_field :uid, class: "form-control" %>
-      
-      <%= f.label :password, class: "label-form" %>
-      <%= f.password_field :password, class: "form-control" %>
-      
-      <%= f.label :basic_time, class: "label-form" %>
-      <%= f.time_field :basic_time, class: "form-control" %>
-      
-      <%= f.label :designated_work_start_time, "指定勤務開始時間", class: "label-form" %>
-      <%= f.time_field :designated_work_start_time, class: "form-control" %>
-      
-      <%= f.label :designated_work_end_time, "指定勤務終了時間", class: "label_form" %>
-      <%= f.time_field :designated_work_end_time, class: "form-control" %>
-      
-      <% end %>
-    </div>
+      <div class="collapse" id="collapse<%= user.id %>">
+        <%= form_with( model: user, local: true) do |f| %>
+        
+        <%= f.label :name, class: "label-form" %>
+        <%= f.text_field :name, class: "form-control" %>
+        
+        <%= f.label :email, class: "label-form" %>
+        <%= f.email_field :email, class: "form-control" %>
+        
+        <%= f.label :affiliation, "所属", class: "label-form" %>
+        <%= f.text_field :affiliation, class: "form-control" %>
+        
+        <%= f.label :employee_number, "社員番号", class: "label-form" %>
+        <%= f.number_field :employee_number, class: "form-control" %>
+        
+        <%= f.label :uid, "カードID", class: "label-form" %>
+        <%= f.text_field :uid, class: "form-control" %>
+        
+        <%= f.label :password, class: "label-form" %>
+        <%= f.password_field :password, class: "form-control" %>
+        
+        <%= f.label :basic_time, class: "label-form" %>
+        <%= f.time_field :basic_time, class: "form-control" %>
+        
+        <%= f.label :designated_work_start_time, "指定勤務開始時間", class: "label-form" %>
+        <%= f.time_field :designated_work_start_time, class: "form-control" %>
+        
+        <%= f.label :designated_work_end_time, "指定勤務終了時間", class: "label_form" %>
+        <%= f.time_field :designated_work_end_time, class: "form-control" %>
+        
+        <% end %>
+      </div>
     </div>
   </div>
 <% end %>

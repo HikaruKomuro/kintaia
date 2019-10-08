@@ -1,10 +1,12 @@
 Rails.application.routes.draw do
+
   get '/signup', to: 'users#new'  #新規ユーザー登録
   
   get '/login', to: 'sessions#new'  #ログイン画面
   post '/login', to: 'sessions#create'  #ログイン画面
   delete '/logout', to: 'sessions#destroy' 
   root 'top_page#top'
+  resources :bases
   
   
   resources :users do

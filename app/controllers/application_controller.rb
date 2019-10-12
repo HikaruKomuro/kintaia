@@ -3,8 +3,8 @@ class ApplicationController < ActionController::Base
   include SessionsHelper
   
   
-    $week = %w{日 月 火 水 木 金 土}
-  
+  $week = %w{日 月 火 水 木 金 土}
+  $statuses = %w{未申請 申請中 承認 否認}
   
   def set_user
     @user = User.find(params[:id])

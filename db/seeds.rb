@@ -7,18 +7,40 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 
-User.create!(name: "Sample User",
+User.create!(name: "管理者",
              email: "sample@email.com",
              password: "password",
              password_confirmation: "password",
              admin: true)
 
-10.times do |n|
+2.times do |n|
   name  = Faker::Name.name
-  email = "sample-#{n+1}@email.com"
+  email = "sample#{n+1}@email.com"
   password = "password"
+  employee_number = "#{(n+1)*111}"
+  uid = "abc#{(n+1)*111}"
   User.create!(name: name,
                email: email,
+               superior: 1,
+               affiliation: "営業",
+               employee_number: employee_number,
+               uid: uid,
+               password: password,
+               password_confirmation: password)
+end
+
+2.times do |n|
+  name  = "上長#{n+1}"
+  email = "sample#{n+10}@email.com"
+  password = "password"
+  employee_number = "#{(n+1)*1111}"
+  uid = "def#{(n+1)*1111}"
+  User.create!(name: name,
+               email: email,
+               superior: 2,
+               affiliation: "営業",
+               employee_number: employee_number,
+               uid: uid,
                password: password,
                password_confirmation: password)
 end

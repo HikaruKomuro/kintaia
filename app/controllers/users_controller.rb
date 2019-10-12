@@ -6,8 +6,18 @@ class UsersController < ApplicationController
   before_action :set_one_month, only: :show
 
 
+
   def index
     @users = User.paginate(page: params[:page], per_page: 5).search(params[:search])
+  end
+
+  def import
+    if User.import(params[:file])
+      flash[:success] = "CSVファイルをインポートしました"
+    else
+      flash[:danger] = "CSVファイルをインポートできませんでした"
+    end
+    redirect_to users_url
   end
 
   def index_working
@@ -21,6 +31,9 @@ class UsersController < ApplicationController
   
   def show
     @worked_sum = @attendances.where.not(started_at: nil).count
+    @request = Request.new
+    @status = @user.attendances.where(status: @first_day)
+    @users = User.where(superior: "2")
   end
 
   def new

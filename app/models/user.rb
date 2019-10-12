@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   has_many :attendances, dependent: :destroy
+  has_many :requests, dependent: :destroy
   
   attr_accessor :remember_token
   before_save { self.email = email.downcase }
@@ -53,8 +54,18 @@ class User < ApplicationRecord
     end
   end
     
+  def self.import(file)
+    CSV.foreach(file.path, headers: true) do |row|
+      user = find_by(id: row["id"]) || new
+      user.attributes = row.to_hash.slice(*updatable_attributes)
+      user.save
+    end
+  end
     
-    
+  def self.updatable_attributes
+    ["name", "email", "affiliation", "employee_number", "uid", "basic_work_time", 
+    "designated_work_start_time", "designated_work_end_time", "superior", "admin", "password"]
+  end
   
   
 end

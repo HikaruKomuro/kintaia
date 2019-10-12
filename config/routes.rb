@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   post '/login', to: 'sessions#create'  #ログイン画面
   delete '/logout', to: 'sessions#destroy' 
   root 'top_page#top'
+  
   resources :bases
   
   
@@ -16,7 +17,9 @@ Rails.application.routes.draw do
       get 'attendances/edit_one_month'
       patch 'attendances/update_one_month'
       get 'index_working'
+      resources :requests, only: [:create, :destroy]
     end
     resources :attendances, only: [:update]
+    collection { post :import }
   end
 end

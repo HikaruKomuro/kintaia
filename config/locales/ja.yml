@@ -62,6 +62,7 @@ ja:
     - :day
   datetime:
     distance_in_words:
+      month: "%m月"
       about_x_hours:
         one: 約1時間
         other: 約%{count}時間

@@ -25,54 +25,60 @@
   </table>
 </div>
 
-<a data-toggle="modal" href="#modalsuperior">【所属長承認申請のお知らせ】</a><br>
-<div class="modal" id="modalsuperior" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-daialog container">
-    <div class="modal-content">
-      <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-      <div class="modal-body">
-        
-        <h3 class="center">【<%=  %>からの１カ月分勤怠申請】</h3>
-        <table class="table table-bordered table-striped">
-          <thead>
-            <tr>
-              <th class="center">月</th>
-              <th class="center">指示者確認印</th>
-              <th class="center">変更</th>
-              <th class="center">勤怠を確認する</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @attendances.each do |a| %>
-            <tr>
-              <td class="center"><%= @first_day.month %>月</td>
-              <td>
-                <select class="form-control">
-                  <option>なし</option>
-                  <option>申請中</option>
-                  <option>承認</option>
-                  <option>否認</option>
-                </select>
-              </td>
-              <td><input class="from-check-input" type="checkbox" id="contirmation"></td>
-              <td><%= link_to "確認", @user, class: "btn btn-primary" %></td>
-            </tr>
-            <!--<% end %>-->
-          </tbody>
-        </table>
-        
-        
-        
-        <div class="center">
-          <%= link_to "変更を送信する", "#", class: "btn btn-primary btn-lg sent-change" %>
+<% if superior_user? %>
+  <% if @user.requests.where(category: 1).count >= 1 %>
+    <a data-toggle="modal" href="#modalsuperior"><font color="red">【所属長承認申請のお知らせ】<span class="border1">１件の通知があります</span></font></a><br>
+  <% else %>
+    <a data-toggle="modal" href="#modalsuperior">【所属長承認申請のお知らせ】</a><br>
+  <% end %>
+  
+  
+  <div class="modal" id="modalsuperior" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-daialog container">
+      <div class="modal-content">
+        <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+        <div class="modal-body">
+          
+          <h3 class="center">【<%=  %>からの１カ月分勤怠申請】</h3>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th class="center">月</th>
+                <th class="center">指示者確認印</th>
+                <th class="center">変更</th>
+                <th class="center">勤怠を確認する</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @requests.each do |a| %>
+              <tr>
+                <td class="center"><%= a.request_month.month %>月</td>
+                <td>
+                  <select class="form-control">
+                    <option><%= $statuses[1] %></option>
+                    <option><%= $statuses[2] %></option>
+                    <option><%= $statuses[3] %></option>
+                  </select>
+                </td>
+                <td><input class="from-check-input" type="checkbox" id="confirmation"></td>
+                <td><%= link_to "確認", user_path(a.applicant), class: "btn btn-primary" %></td>
+              </tr>
+              <!--<% end %>-->
+            </tbody>
+          </table>
+          
+          
+          
+          <div class="center">
+            <%= link_to "変更を送信する", "#", class: "btn btn-primary btn-lg sent-change" %>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-<%= link_to "【勤怠変更申請のお知らせ】", "#" %><br>
-<%= link_to "【残業申請のお知らせ】", "#" %><br>
-
+  <%= link_to "【勤怠変更申請のお知らせ】", "#" %><br>
+  <%= link_to "【残業申請のお知らせ】", "#" %><br>
+<% end %>
 
 <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-primary" %>
 <%= link_to "CSVを出力", "#", class: "btn btn-primary" %><br>
@@ -163,8 +169,8 @@
                     <% end %>
                     
                     
-        <%= form_with(model: @request, url: requests_path(@first_day, current_user), method: :post, local: true) do |f| %>
-        <%= f.select :applicant, @users.pluck(:name), class: "form-control" %><br>
+        <%= form_with(model: @request, url: requests_path(applicant:current_user, request_month:@first_day.month, category:1), method: :post, local: true) do |f| %>
+        <%= f.select :target, @users.pluck(:name), class: "form-control" %><br>
         <%= f.submit "申請", class: "btn btn-primary" %>
         <% end %>
         

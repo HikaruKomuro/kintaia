@@ -34,6 +34,7 @@ class UsersController < ApplicationController
     @request = Request.new
     @status = @user.attendances.where(status: @first_day)
     @users = User.where(superior: "2")
+    @requests = @user.requests.where(category: 1)
   end
 
   def new

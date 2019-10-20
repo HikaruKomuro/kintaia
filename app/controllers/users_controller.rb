@@ -36,8 +36,6 @@ class UsersController < ApplicationController
     @users = User.where(superior: "2")
     @requests = @user.requests.where(category: 1)
     @applied_users = @requests.pluck(:applicant).uniq
-    
-    
   end
 
   def new

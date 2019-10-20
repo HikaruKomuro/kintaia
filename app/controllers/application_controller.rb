@@ -18,6 +18,8 @@ class ApplicationController < ActionController::Base
         redirect_to login_url
       end
     end
+    
+    
 
     # アクセスしたユーザーが現在ログインしているユーザーか確認します。
     def correct_user

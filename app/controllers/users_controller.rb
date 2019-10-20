@@ -32,9 +32,12 @@ class UsersController < ApplicationController
   def show
     @worked_sum = @attendances.where.not(started_at: nil).count
     @request = Request.new
-    @status = @user.attendances.where(status: @first_day)
+    @status = @user.attendances.find_by(worked_on: @first_day)
     @users = User.where(superior: "2")
     @requests = @user.requests.where(category: 1)
+    @applied_users = @requests.pluck(:applicant).uniq
+    
+    
   end
 
   def new

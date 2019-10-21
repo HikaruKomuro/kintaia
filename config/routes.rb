@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  get 'overtimes/create'
+
   get '/signup', to: 'users#new'  #新規ユーザー登録
   
   get '/login', to: 'sessions#new'  #ログイン画面
@@ -18,6 +20,7 @@ Rails.application.routes.draw do
       patch 'attendances/update_one_month'
       get 'index_working'
       resources :requests, only: [:create, :destroy]
+      resources :overtimes, only: [:create, :destroy]
     end
     resources :attendances, only: [:update]
     collection { post :import }

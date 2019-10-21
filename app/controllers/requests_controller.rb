@@ -1,6 +1,7 @@
 class RequestsController < ApplicationController
     
 	def create
+		debugger
 		@user = User.find_by(name: params[:request][:target])
 		@request = @user.requests.new(request_month: params[:request_month], category: params[:category], applicant: params[:applicant])
 		@request.save

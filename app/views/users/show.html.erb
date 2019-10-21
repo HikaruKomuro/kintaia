@@ -129,38 +129,39 @@
                     <h1>【残業申請】</h1>
                   </div>
                   <div class="modal-body">
-                    <table class="table table-bordered table-striped">
-                      <thead>
-                        <tr>
-                          <th>日付</th>
-                          <th>曜日</th>
-                          <th>終了予定時間</th>
-                          <th>翌日</th>
-                          <th>業務処理内容</th>
-                          <th>指示者確認</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <%= form_with( method: :post, local: true) do |f| %>
-                          <td><%= day.worked_on.strftime('%-m/%-d') %></td>
-                          <td>
-                            <% if day.worked_on.wday == 0 %>
-                              <font color="red"><%= $week[day.worked_on.wday] %></font>
-                            <% elsif day.worked_on.wday == 6 %>
-                              <font color="blue"><%= $week[day.worked_on.wday] %></font>
-                            <% else %>
-                              <%= $week[day.worked_on.wday] %>
-                            <% end %>
-                          </td>
-                          <td><%= f.time_select :finish_time,{ minute_step: 15 } %> </td>
-                          <td><%= f.check_box :tomorrow %></td>
-                          <td><%= f.text_field :note %></td>
-                          <td><%= f.select :superior, @users.pluck(:name) %></td>
-                          <% end %>
-                        </tr>
-                      </tbody>
-                    </table>
+                    <%= form_with( model: @request, method: :post, local: true) do |f| %>
+                      <table class="table table-bordered table-striped">
+                        <thead>
+                          <tr>
+                            <th>日付</th>
+                            <th>曜日</th>
+                            <th>終了予定時間</th>
+                            <th>翌日</th>
+                            <th>業務処理内容</th>
+                            <th>指示者確認</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td><%= day.worked_on.strftime('%-m/%-d') %></td>
+                            <td>
+                              <% if day.worked_on.wday == 0 %>
+                                <font color="red"><%= $week[day.worked_on.wday] %></font>
+                              <% elsif day.worked_on.wday == 6 %>
+                                <font color="blue"><%= $week[day.worked_on.wday] %></font>
+                              <% else %>
+                                <%= $week[day.worked_on.wday] %>
+                              <% end %>
+                            </td>
+                            <td><%= f.time_select :finish_time,{ minute_step: 15 } %> </td>
+                            <td><%= f.check_box :change_date %></td>
+                            <td><%= f.text_field :note %></td>
+                            <td><%= f.select :superior, @users.pluck(:name) %></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <%= f.submit "残業を申請する", class: "btn btn-primary btn-block" %>
+                    <% end %>
                   </div>
                 </div>
               </div>

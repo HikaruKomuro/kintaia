@@ -20,7 +20,6 @@ Rails.application.routes.draw do
       patch 'attendances/update_one_month'
       get 'index_working'
       resources :requests, only: [:create, :destroy]
-      resources :overtimes, only: [:create, :destroy]
     end
     resources :attendances, only: [:update]
     collection { post :import }

@@ -63,7 +63,9 @@
                   <td>
                     <%= f.select 'status[]', [[$statuses[1],1],[$statuses[2],2],[$statuses[3],3]] %>
                   </td>
-                  <td><%= f.check_box 'checkbox[]' %></td>
+                  <td>
+                    <%= f.check_box 'checkbox[]'%>
+                  </td>
                   <td><%= link_to "確認", user_path(a.applicant), class: "btn btn-primary" %></td>
                 </tr>
                 <% end %>
@@ -129,7 +131,7 @@
                     <h1>【残業申請】</h1>
                   </div>
                   <div class="modal-body">
-                    <%= form_with( model: @request, method: :post, local: true) do |f| %>
+                    <%= form_with model: @request, url: requests_path(applicant: current_user, request_date: day.worked_on, category: 3), method: :post, local: true do |f| %>
                       <table class="table table-bordered table-striped">
                         <thead>
                           <tr>
@@ -203,7 +205,11 @@
         <td></td>
         <td></td>
         <td></td>
-        <td></td>
+        <td><% if day.status3.blank? %>
+            <% else %>
+              <%= $statuses[day.status3] %>
+            <% end %>
+        </td>
       </tr>
     <% end %>
   </tbody>
@@ -212,14 +218,14 @@
       <td colspan="8">総合勤務時間　：<%= format_basic_info(@user.basic_time).to_f * @worked_sum %></td>
       <td colspan="7">合計在社時間　：<%= format("%.2f", @total_worked_time.to_f) %></td>
       <td>
-        所属長承認：<% if @status.status.blank? %>
+        所属長承認：<% if @attendance1.status1.blank? %>
                       <%= $statuses[0] %>
                     <% else %>
-                      <%= $statuses[@status.status] %>
+                      <%= $statuses[@attendance1.status1] %>
                     <% end %>
         <% if current_user?(@user) %>            
-          <%= form_with(model: @request, url: requests_path(applicant: current_user, request_month: @first_day, category: 1), method: :post, local: true) do |f| %>
-            <%= f.select :target, @users.pluck(:name), class: "form-control" %><br>
+          <%= form_with(model: @request, url: requests_path(applicant: current_user, request_date: @first_day, category: 1), method: :post, local: true) do |f| %>
+            <%= f.select :superior, @users.pluck(:name), class: "form-control" %><br>
             <%= f.submit "申請", class: "btn btn-primary" %>
           <% end %>
         <% end %>

@@ -123,7 +123,7 @@
           <% if current_user?(@user) %>
             <a data-toggle="modal" href="#zangyo-modal" class="btn btn-primary">残業申請</a>
             <div class="modal" id="zangyo-modal" tabindex="-1" role="dialog" aria-labelledby="zangyo-label" aria-hidden="true">
-              <div class="modal-dialog container">
+              <div class="modal-dialog">
                 <div class="modal-content">
                   <div class="modal-header">
                     <h1>【残業申請】</h1>
@@ -153,7 +153,7 @@
                               <%= $week[day.worked_on.wday] %>
                             <% end %>
                           </td>
-                          <td></td>
+                          <td><%= f.time_select :finish_time,{ minute_step: 15 } %> </td>
                           <td><%= f.check_box :tomorrow %></td>
                           <td><%= f.text_field :note %></td>
                           <td><%= f.select :superior, @users.pluck(:name) %></td>

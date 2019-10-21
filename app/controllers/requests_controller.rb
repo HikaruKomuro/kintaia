@@ -20,6 +20,10 @@ class RequestsController < ApplicationController
 				@applied_user = User.find(r.applicant).attendances.find_by(worked_on: r.request_month)
 				@applied_user.update(status: 2)
 				r.destroy
+			elsif @statuses[s] == "3"
+				@applied_user = User.find(r.applicant).attendances.find_by(worked_on: r.request_month)
+				@applied_user.update(status: 3)
+				r.destroy
 			end
 			s += 1
 		end

@@ -20,7 +20,7 @@ class RequestsController < ApplicationController
 		
 		@statuses = params[:status]
 		@user = User.find(params[:id])
-		@requests = @user.requests.where(category: 1)
+		@requests = @user.requests.where(category: 1).order(:applicant)
 		s = 0
 		@requests.each do |r|
 			if @statuses[s] == "2"

@@ -31,12 +31,11 @@
 
 <% if current_user?(@user) %>
   <% if superior_user? %>
-    <% if @user.requests.where(category: 1).count >= 1 %>
-      <a data-toggle="modal" href="#modalsuperior"><font color="red">【所属長承認申請のお知らせ】<span class="border1"><%= @requests.count %>件の通知があります</span></font></a><br>
+    <% if @requests1.count >= 1 %>
+      <a data-toggle="modal" href="#modalsuperior"><font color="red">【所属長承認申請のお知らせ】<span class="border1"><%= @requests1.count %>件の通知があります</span></font></a><br>
     <% else %>
-      <a data-toggle="modal" href="#modalsuperior">【所属長承認申請のお知らせ】</a><br>
+      <a>【所属長承認申請のお知らせ】</a><br>
     <% end %>
-    
     
     <div class="modal" id="modalsuperior" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-daialog container">
@@ -45,32 +44,33 @@
           <div class="modal-body">
             
             <%= form_with(url: request_path, method: :delete, local: true) do |f| %>
-            <% @applied_users.each do |au| %>
-            <h3 class="center">【<%= User.find(au).name %>からの１カ月分勤怠申請】</h3>
-            <table class="table table-bordered table-striped">
-              <thead>
-                <tr>
-                  <th class="center">月</th>
-                  <th class="center">指示者確認印</th>
-                  <th class="center">変更</th>
-                  <th class="center">勤怠を確認する</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% @requests.each do |a| %>
-                <tr>
-                  <td class="center"><%= a.request_month.month %>月</td>
-                  <td>
-                    <%= f.select 'status[]', [[$statuses[1],1],[$statuses[2],2],[$statuses[3],3]] %>
-                  </td>
-                  <td>
-                    <%= f.check_box 'checkbox[]'%>
-                  </td>
-                  <td><%= link_to "確認", user_path(a.applicant), class: "btn btn-primary" %></td>
-                </tr>
-                <% end %>
-              </tbody>
-            </table>
+            <% @applied_users1.each do |au| %>
+              <h3 class="center">【<%= User.find(au).name %>からの１カ月分勤怠申請】</h3>
+              <table class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th class="center">月</th>
+                    <th class="center">指示者確認印</th>
+                    <th class="center">変更</th>
+                    <th class="center">勤怠を確認する</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @requests1.where(applicant: au).each do |a| %>
+                  
+                    <tr>
+                      <td class="center"><%= a.request_date.month %>月</td>
+                      <td>
+                        <%= f.select 'status[]', [[$statuses[1],1],[$statuses[2],2],[$statuses[3],3]] %>
+                      </td>
+                      <td>
+                        <%= f.check_box 'checkbox[]'%>
+                      </td>
+                      <td><%= link_to "確認", user_path(a.applicant, date: a.request_date), class: "btn btn-primary" %></td>
+                    </tr>
+                  <% end %>  
+                </tbody>
+              </table>
             <% end %>
             <div class="center">
               <%= f.submit "変更を送信する", class: "btn btn-primary btn-lg sent-change" %>
@@ -81,7 +81,14 @@
       </div>
     </div>
     <%= link_to "【勤怠変更申請のお知らせ】", "#" %><br>
-    <%= link_to "【残業申請のお知らせ】", "#" %><br>
+    
+    
+
+    
+    
+    
+    
+    
   <% end %>
   <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-primary" %>
   <%= link_to "CSVを出力", "#", class: "btn btn-primary" %><br>

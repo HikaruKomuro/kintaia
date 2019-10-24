@@ -16,7 +16,6 @@ ActiveRecord::Schema.define(version: 20191024060008) do
     t.date "worked_on"
     t.datetime "started_at"
     t.datetime "finished_at"
-    t.string "note2"
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -24,7 +23,7 @@ ActiveRecord::Schema.define(version: 20191024060008) do
     t.integer "status1"
     t.integer "status3"
     t.integer "status2"
-    t.string "note3"
+    t.string "note"
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 

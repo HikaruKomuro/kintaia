@@ -2,7 +2,7 @@
 
 <h1>勤怠編集</h1>
 
-<%= form_with(model: @user, url: attendances_update_one_month_user_path(date: @first_day), local: true, method: :patch) do |f| %>
+<%= form_with(model: @request, url: request_path(date: @first_day), local: true, method: :post) do |f| %>
 
   <table class="table table-bordered table-striped">
     <thead>

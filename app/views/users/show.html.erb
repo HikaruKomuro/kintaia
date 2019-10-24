@@ -147,7 +147,7 @@
                       <td><%=  %></td>
                       <td><%=  %></td>
                       <td><%=  %></td>
-                      <td><%= a.note %></td>
+                      <td><%=  %></td>
                       <td>
                         <%= f.select 'status[]', [[$statuses[1],1],[$statuses[2],2],[$statuses[3],3]] %>
                       </td>
@@ -214,7 +214,7 @@
                       <td><%= a.finish_time.strftime("%H:%M") %></td>
                       <td><%= User.find(au).designated_work_end_time.strftime("%H:%M") %></td>
                       <td></td>
-                      <td><%= a.note %></td>
+                      <td><%=  %></td>
                       <td>
                         <%= f.select 'status[]', [[$statuses[1],1],[$statuses[2],2],[$statuses[3],3]] %>
                       </td>
@@ -359,11 +359,11 @@
             <% @total_worked_time = @total_worked_time.to_f + str_times.to_f %>
           <% end %>
           </td>
-        <td><%= day.note3 %></td>
+        <td><%=  %></td>
         <td></td>
         <td></td>
         <td></td>
-        <td><%= day.note2 %></td>
+        <td><%=  %></td>
         <td><% if day.status3.blank? %>
             <% else %>
               残業申請<%= $statuses[day.status3] %>

@@ -1,7 +1,7 @@
 class RequestsController < ApplicationController
     
 	def create
-		
+			debugger
 		@user = User.find_by(name: params[:request][:superior])
 		@request = @user.requests.new(request_date: params[:request_date], category: params[:category], applicant: params[:applicant], finish_time: params[:request]["finish_time(3i)"], note: params[:note], change_date: params[:change_date])
 		@request.save
@@ -17,7 +17,7 @@ class RequestsController < ApplicationController
 	end
 	
 	def destroy
-		
+	
 		@statuses = params[:status]
 		@user = User.find(params[:id])
 		@requests = @user.requests.where(category: 1).order(:applicant)

@@ -56,14 +56,14 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <% @requests1.where(applicant: au).each do |a| %>
+                  <% @requests1.where(applicant: au).each_with_index do |a, index| %>
                     <tr>
                       <td class="center"><%= a.request_date.month %>月</td>
                       <td>
                         <%= f.select 'status[]', [[$statuses[1],1],[$statuses[2],2],[$statuses[3],3]] %>
                       </td>
                       <td>
-                        <%= f.check_box 'checkbox[]'%>
+                        <%= f.check_box "check_box[#{index}]" %>
                       </td>
                       <td><%= link_to "確認", user_path(a.applicant, date: a.request_date), class: "btn btn-primary" %></td>
                     </tr>
@@ -282,8 +282,8 @@
       <tr>
         <td>
           <% if current_user?(@user) %>
-            <a data-toggle="modal" href="#zangyo-modal" class="btn btn-primary">残業申請</a>
-            <div class="modal" id="zangyo-modal" tabindex="-1" role="dialog" aria-labelledby="zangyo-label" aria-hidden="true">
+            <a data-toggle="modal" href="#zangyo-modal<%= day.id %>" class="btn btn-primary">残業申請</a>
+            <div class="modal" id="zangyo-modal<%= day.id %>" tabindex="-1" role="dialog" aria-labelledby="zangyo-label" aria-hidden="true">
               <div class="modal-dialog">
                 <div class="modal-content">
                   <div class="modal-header">
@@ -304,7 +304,7 @@
                         </thead>
                         <tbody>
                           <tr>
-                            <td><%= day.worked_on.strftime('%-m/%-d') %></td>
+                            <td><%= day.worked_on %></td>
                             <td>
                               <% if day.worked_on.wday == 0 %>
                                 <font color="red"><%= $week[day.worked_on.wday] %></font>
@@ -314,7 +314,7 @@
                                 <%= $week[day.worked_on.wday] %>
                               <% end %>
                             </td>
-                            <td><%= f.time_select :finish_time,{ minute_step: 15 } %> </td>
+                            <td><%= f.time_select :finish_time,{ minute_step: 15, :default => {:year => day.worked_on.year, :month => day.worked_on.month, :day => day.worked_on.day}} %> </td>
                             <td><%= f.check_box :change_date %></td>
                             <td><%= f.text_field :note %></td>
                             <td><%= f.select :superior, @users.pluck(:name) %></td>

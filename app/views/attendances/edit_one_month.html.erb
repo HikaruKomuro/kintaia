@@ -2,8 +2,8 @@
 
 <h1>勤怠編集</h1>
 
-<%= form_with(model: @request, url: request_path(date: @first_day), local: true, method: :post) do |f| %>
 
+<%= form_with(url: requests_path, local: true, method: :post) do |f| %>
   <table class="table table-bordered table-striped">
     <thead>
       <tr>
@@ -17,7 +17,8 @@
       </tr>
     </thead>
     <tbody>
-      <% @attendances.each do |day| %>
+      <% @attendances.each_with_index do |day, index| %>
+        
           <tr>
             <td><%= l(day.worked_on, format: :short) %></td>
             <td>
@@ -34,13 +35,13 @@
                 <td><%= f.time_select :finished_at, {include_blank: true , disabled: true} %></td>
                 <td><%= %></td>
                 <td><%= f.text_field :note, disabled: true, class: 'form-control' %></td>
-                <td><%= %></td>
+                <td></td>
               <% else %>  
-                <td><%= f.time_select :started_at, {include_blank: true, minute_step: 15} %></td>
-                <td><%= f.time_select :finished_at, {include_blank: true, minute_step: 15} %></td>
-                <td><%= f.check_box :comfirmation%></td>
-                <td><%= f.text_field :note, class: 'form-control' %></td>
-                <td><%= f.select :superior, @users.pluck(:name) %></td>
+                <td><%= f.time_select "started_at[#{index}]", {include_blank: true, minute_step: 15} %></td>
+                <td><%= f.time_select "finished_at[#{index}]",{include_blank: true, minute_step: 15} %></td>
+                <td><%= f.check_box "comfirmation[#{index}]"%></td>
+                <td><%= f.text_field "note[#{index}]", class: 'form-control' %></td>
+                <td><%= f.select "superior[#{index}]", @users.pluck(:name), include_blank: true %></td>
               <% end %>
               
           </tr>
@@ -53,5 +54,4 @@
     <%= f.submit "編集を登録", class: "btn btn-primary btn-lg" %>
     <%= link_to "キャンセル", user_path(date: @first_day), class: "btn btn-default btn-lg" %>
   </div>
-
 <% end %>

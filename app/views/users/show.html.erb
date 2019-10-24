@@ -57,7 +57,6 @@
                 </thead>
                 <tbody>
                   <% @requests1.where(applicant: au).each do |a| %>
-                  
                     <tr>
                       <td class="center"><%= a.request_date.month %>月</td>
                       <td>
@@ -80,9 +79,95 @@
         </div>
       </div>
     </div>
-    <%= link_to "【勤怠変更申請のお知らせ】", "#" %><br>
     
     
+    
+    <% if @requests2.blank? %>
+     <a data-toggle="modal" href="#change-worked-time">【勤怠変更申請のお知らせ】</a><br>
+       <% else %>
+     <a data-toggle="modal" href="#change-worked-time"><font color="red">【勤怠変更申請のお知らせ】<span class="border1"><%= @requests2.count %>件の通知があります</span></font></a><br>
+   
+    <% end %>
+    
+    <div class="modal" id="change-worked-time" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-daialog container">
+        <div class="modal-content">
+          <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+          <div class="modal-body">
+            <%= form_with(url: request_path, method: :delete, local: true) do |f| %>
+            <% @applied_users2.each do |au| %>
+              <h3 class="center">【<%= User.find(au).name %>からの勤怠変更申請】</h3>
+              <table class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th class="center" rowspan="3">日付</th>
+                    <th class="center" rowspan="3">曜日</th>
+                    <th class="center" colspan="4">変更前</th>
+                    <th class="center" colspan="4">変更後</th>
+                    <th class="center" rowspan="3">備考</th>
+                    <th class="center" rowspan="3">指示者確認</th>
+                    <th class="center" rowspan="3">変更</th>
+                    <th class="center" rowspan="3">勤怠を確認する</th>
+                  </tr>
+                  <tr>
+                    <th class="center" colspan="2">出社</th>
+                    <th class="center" colspan="2">退社</th>
+                    <th class="center" colspan="2">出社</th>
+                    <th class="center" colspan="2">退社</th>
+                  </tr>
+                  <tr>
+                    <th class="center">時</th>
+                    <th class="center">分</th>
+                    <th class="center">時</th>
+                    <th class="center">分</th>
+                    <th class="center">時</th>
+                    <th class="center">分</th>
+                    <th class="center">時</th>
+                    <th class="center">分</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @requests2.where(applicant: au).each do |a| %>
+                    <tr>
+                      <td class="center"><%= a.request_date.strftime("%-m/%-d") %></td>
+                      <td class="center">
+                        <% if a.request_date.wday == 0 %>
+                          <font color="red"><%= $week[a.request_date.wday] %></font>
+                        <% elsif a.request_date.wday == 6 %>
+                          <font color="blue"><%= $week[a.request_date.wday] %></font>
+                        <% else %>
+                          <%= $week[a.request_date.wday] %>
+                        <% end %>
+                      </td>
+                      <td><%=  %></td>
+                      <td><%=  %></td>
+                      <td><%=  %></td>
+                      <td><%=  %></td>
+                      <td><%=  %></td>
+                      <td><%=  %></td>
+                      <td><%=  %></td>
+                      <td><%=  %></td>
+                      <td><%= a.note %></td>
+                      <td>
+                        <%= f.select 'status[]', [[$statuses[1],1],[$statuses[2],2],[$statuses[3],3]] %>
+                      </td>
+                      <td>
+                        <%= f.check_box 'checkbox[]'%>
+                      </td>
+                      <td><%= link_to "確認", user_path(a.applicant, date: a.request_date), class: "btn btn-primary" %></td>
+                    </tr>
+                  <% end %>  
+                </tbody>
+              </table>
+            <% end %>
+            <div class="center">
+              <%= f.submit "変更を送信する", class: "btn btn-primary btn-lg sent-change" %>
+            </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
     
     
     
@@ -274,14 +359,18 @@
             <% @total_worked_time = @total_worked_time.to_f + str_times.to_f %>
           <% end %>
           </td>
-        <td><%= day.note %></td>
+        <td><%= day.note3 %></td>
         <td></td>
         <td></td>
         <td></td>
-        <td></td>
+        <td><%= day.note2 %></td>
         <td><% if day.status3.blank? %>
             <% else %>
-              <%= $statuses[day.status3] %>
+              残業申請<%= $statuses[day.status3] %>
+            <% end %>
+            <% if day.status2.blank? %>
+            <% else %>
+              勤怠変更<%= $statuses[day.status2] %>
             <% end %>
         </td>
       </tr>

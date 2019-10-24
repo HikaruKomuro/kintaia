@@ -27,9 +27,11 @@ UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してくださ
   end
   
   def edit_one_month
+    @users = User.where(superior: "2")
   end
   
   def update_one_month
+    debugger
     ActiveRecord::Base.transaction do
       attendances_params.each do |id, item|
         attendance = Attendance.find(id)

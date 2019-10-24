@@ -35,8 +35,10 @@ class UsersController < ApplicationController
     @attendance1 = @user.attendances.find_by(worked_on: @first_day)
     @users = User.where(superior: "2")
     @requests1 = @user.requests.where(category: 1).order(:applicant)
+    @requests2 = @user.requests.where(category: 2).order(:applicant)
     @requests3 = @user.requests.where(category: 3).order(:applicant)
     @applied_users1 = @requests1.pluck(:applicant).uniq
+    @applied_users2 = @requests2.pluck(:applicant).uniq
     @applied_users3 = @requests3.pluck(:applicant).uniq
     
   end

@@ -7,16 +7,17 @@
   <table class="table table-bordered table-striped">
     <thead>
       <tr>
-        <th>日付</th>
-        <th>曜日</th>
-        <th>出社</th>
-        <th>退社</th>
-        <th>備考</th>
+        <th class="center">日付</th>
+        <th class="center">曜日</th>
+        <th class="center">出社</th>
+        <th class="center">退社</th>
+        <th class="center">翌日</th>
+        <th class="center">備考</th>
+        <th class="center">指示者確認</th>
       </tr>
     </thead>
     <tbody>
       <% @attendances.each do |day| %>
-        <%= f.fields_for "attendances[]", day do |attendance| %>
           <tr>
             <td><%= l(day.worked_on, format: :short) %></td>
             <td>
@@ -29,15 +30,21 @@
               <% end %>
             </td>
             <% if !current_user.admin? && (Date.current < day.worked_on) %>
-                <td><%= attendance.time_field :started_at, readonly: true, class: "form-control" %></td>
-                <td><%= attendance.time_field :finished_at, readonly: true, class: "form-control" %></td>
+                <td><%= f.time_select :started_at, {include_blank: true, disabled: true} %></td>
+                <td><%= f.time_select :finished_at, {include_blank: true , disabled: true} %></td>
+                <td><%= %></td>
+                <td><%= f.text_field :note, disabled: true, class: 'form-control' %></td>
+                <td><%= %></td>
               <% else %>  
-                <td><%= attendance.time_field :started_at, class: "form-control" %></td>
-                <td><%= attendance.time_field :finished_at, class: "form-control" %></td>
+                <td><%= f.time_select :started_at, {include_blank: true, minute_step: 15} %></td>
+                <td><%= f.time_select :finished_at, {include_blank: true, minute_step: 15} %></td>
+                <td><%= f.check_box :comfirmation%></td>
+                <td><%= f.text_field :note, class: 'form-control' %></td>
+                <td><%= f.select :superior, @users.pluck(:name) %></td>
               <% end %>
-              <td><%= attendance.text_field :note, class: "form-control" %></td>
+              
           </tr>
-        <% end %>
+        
       <% end %>
     </tbody>
   </table>

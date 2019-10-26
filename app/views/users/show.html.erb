@@ -63,7 +63,7 @@
                         <%= f.select 'status[]', [[$statuses[1],1],[$statuses[2],2],[$statuses[3],3]] %>
                       </td>
                       <td>
-                        <%= f.check_box "check_box[#{index}]" %>
+                        <%= f.check_box "check_box#{a.applicant}[#{index}]",include_hidden: false %>
                       </td>
                       <td><%= link_to "確認", user_path(a.applicant, date: a.request_date), class: "btn btn-primary" %></td>
                     </tr>

@@ -1,16 +1,12 @@
 class RequestsController < ApplicationController
     
 	def create
-		@user = User.find_by(name: params[:request][:superior])
-		@request = @user.requests.new(request_date: params[:request_date], category: params[:category], applicant: params[:applicant], finish_time: params[:request]["finish_time(3i)"], note: params[:note], change_date: params[:change_date])
+		@user = User.find_by(name: params[:request][:target])
+		@request = @user.requests.new(request_month: params[:request_month], category: params[:category], applicant: params[:applicant])
 		@request.save
 		@user_applied = User.find_by(id: params[:applicant])
-		@status = @user_applied.attendances.find_by(worked_on: params[:request_date])
-		if @request.category  == 1
-			@status.update(status1: 1)
-		elsif @request.category == 3
-			@status.update(status3: 1)
-		end
+		@status = @user_applied.attendances.find_by(worked_on: params[:request_month])
+		@status.update(status: 1)
 		redirect_to user_path
 	end
 	
@@ -45,7 +41,6 @@ class RequestsController < ApplicationController
 			m += 1
 			pre_applicant = r.applicant
 		end
-		
 		redirect_to user_path
 	end
 	

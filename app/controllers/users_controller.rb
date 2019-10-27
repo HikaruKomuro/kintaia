@@ -31,7 +31,6 @@ class UsersController < ApplicationController
   
   def show
     @worked_sum = @attendances.where.not(started_at: nil).count
-    @request = Request.new
     @attendance1 = @user.attendances.find_by(worked_on: @first_day)
     @users = User.where(superior: "2")
     @requests1 = @user.requests.where(category: 1).order(:applicant)
@@ -40,7 +39,6 @@ class UsersController < ApplicationController
     @applied_users1 = @requests1.pluck(:applicant).uniq
     @applied_users2 = @requests2.pluck(:applicant).uniq
     @applied_users3 = @requests3.pluck(:applicant).uniq
-    
   end
 
   def new
@@ -94,6 +92,8 @@ class UsersController < ApplicationController
   def search
     @users = User.search(params[:search])
   end
+  
+    
   
   
   private

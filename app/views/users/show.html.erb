@@ -44,6 +44,7 @@
           <div class="modal-body">
             
             <%= form_with(url: request_path, method: :delete, local: true) do |f| %>
+              <%= f.hidden_field :category, value: 1 %>
             <% @applied_users1.each do |au| %>
               <h3 class="center">【<%= User.find(au).name %>からの１カ月分勤怠申請】</h3>
               <table class="table table-bordered table-striped">
@@ -95,6 +96,7 @@
           <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
           <div class="modal-body">
             <%= form_with(url: request_path, method: :delete, local: true) do |f| %>
+              <%= f.hidden_field :category, value: 2 %>
             <% @applied_users2.each do |au| %>
               <h3 class="center">【<%= User.find(au).name %>からの勤怠変更申請】</h3>
               <table class="table table-bordered table-striped">
@@ -182,6 +184,7 @@
           <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
           <div class="modal-body">
             <%= form_with(url: request_path, method: :delete, local: true) do |f| %>
+              <%= f.hidden_field :category, value: 3 %>
             <% @applied_users3.each do |au| %>
               <h3 class="center">【<%= User.find(au).name %>からの残業申請】</h3>
               <table class="table table-bordered table-striped">
@@ -199,7 +202,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <% @requests3.where(applicant: au).each do |a| %>
+                  <% @requests3.where(applicant: au).each_with_index do |a, index| %>
                     <tr>
                       <td class="center"><%= a.request_date.strftime("%-m/%-d") %></td>
                       <td class="center">
@@ -213,13 +216,15 @@
                       </td>
                       <td><%= a.finish_time.strftime("%H:%M") %></td>
                       <td><%= User.find(au).designated_work_end_time.strftime("%H:%M") %></td>
-                      <td></td>
-                      <td><%=  %></td>
+                      
+                      
+                      <td><%= User.find(au).attendances.find_by(worked_on: a.request_date).overtime %></td>
+                      <td><%= a.note %></td>
                       <td>
                         <%= f.select 'status[]', [[$statuses[1],1],[$statuses[2],2],[$statuses[3],3]] %>
                       </td>
                       <td>
-                        <%= f.check_box 'checkbox[]'%>
+                        <%= f.check_box "check_box#{a.applicant}[#{index}]",include_hidden: false %>
                       </td>
                       <td><%= link_to "確認", user_path(a.applicant, date: a.request_date), class: "btn btn-primary" %></td>
                     </tr>
@@ -290,37 +295,42 @@
                     <h1>【残業申請】</h1>
                   </div>
                   <div class="modal-body">
-                    <%= form_with model: @request, url: requests_path(applicant: current_user, request_date: day.worked_on, category: 3), method: :post, local: true do |f| %>
-                      <table class="table table-bordered table-striped">
-                        <thead>
-                          <tr>
-                            <th>日付</th>
-                            <th>曜日</th>
-                            <th>終了予定時間</th>
-                            <th>翌日</th>
-                            <th>業務処理内容</th>
-                            <th>指示者確認</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td><%= day.worked_on %></td>
-                            <td>
-                              <% if day.worked_on.wday == 0 %>
-                                <font color="red"><%= $week[day.worked_on.wday] %></font>
-                              <% elsif day.worked_on.wday == 6 %>
-                                <font color="blue"><%= $week[day.worked_on.wday] %></font>
-                              <% else %>
-                                <%= $week[day.worked_on.wday] %>
-                              <% end %>
-                            </td>
-                            <td><%= f.time_select :finish_time,{ minute_step: 15, :default => {:year => day.worked_on.year, :month => day.worked_on.month, :day => day.worked_on.day}} %> </td>
-                            <td><%= f.check_box :change_date %></td>
-                            <td><%= f.text_field :note %></td>
-                            <td><%= f.select :superior, @users.pluck(:name) %></td>
-                          </tr>
-                        </tbody>
-                      </table>
+                    <%= form_with(model: @request, url: requests_path, method: :post, local: true) do |f| %>
+                      <%= f.fields_for :requests do |r| %>
+                        <%= r.hidden_field :applicant, value: current_user.id %>
+                        <%= r.hidden_field :request_date, value: day.worked_on %>
+                        <%= r.hidden_field :category, value: 3 %>
+                        <table class="table table-bordered table-striped">
+                          <thead>
+                            <tr>
+                              <th>日付</th>
+                              <th>曜日</th>
+                              <th>終了予定時間</th>
+                              <th>翌日</th>
+                              <th>業務処理内容</th>
+                              <th>指示者確認</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td><%= day.worked_on %></td>
+                              <td>
+                                <% if day.worked_on.wday == 0 %>
+                                  <font color="red"><%= $week[day.worked_on.wday] %></font>
+                                <% elsif day.worked_on.wday == 6 %>
+                                  <font color="blue"><%= $week[day.worked_on.wday] %></font>
+                                <% else %>
+                                  <%= $week[day.worked_on.wday] %>
+                                <% end %>
+                              </td>
+                              <td><%= r.time_select :finish_time,{ minute_step: 15 } %> </td>
+                              <td><%= f.check_box :change_date %></td>
+                              <td><%= r.text_field :note %></td>
+                              <td><%= f.select :superior, @users.pluck(:name) %></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      <% end %>
                       <%= f.submit "残業を申請する", class: "btn btn-primary btn-block" %>
                     <% end %>
                   </div>
@@ -387,10 +397,14 @@
                       <%= $statuses[@attendance1.status1] %>
                     <% end %>
         <% if current_user?(@user) %>            
-          <%= form_with(url: requests_path(applicant: current_user, request_date: @first_day, category: 1), method: :post, local: true) do |f| %>
-            <%= f.select :superior, @users.pluck(:name), class: "form-control" %><br>
+          <%= form_with(model: @request, url: requests_path, method: :post, local: true) do |f| %>
+            <%= f.fields_for :requests do |r| %>
+              <%= r.hidden_field :applicant, value: current_user.id %>
+              <%= r.hidden_field :request_date, value: @first_day %>
+              <%= r.hidden_field :category, value: 1 %>
+              <%= f.select :superior, @users.pluck(:name), class: "form-control" %>
+            <% end %><br>
             <%= f.submit "申請", class: "btn btn-primary" %>
-            
           <% end %>
         <% end %>
       </td>

@@ -214,10 +214,8 @@
                           <%= $week[a.request_date.wday] %>
                         <% end %>
                       </td>
-                      <td><%= a.finish_time.strftime("%H:%M") %></td>
+                      <td><%= User.find(au).attendances.find_by(worked_on: a.request_date).finish_time.strftime("%H:%M") %></td>
                       <td><%= User.find(au).designated_work_end_time.strftime("%H:%M") %></td>
-                      
-                      
                       <td><%= User.find(au).attendances.find_by(worked_on: a.request_date).overtime %></td>
                       <td><%= a.note %></td>
                       <td>
@@ -295,7 +293,7 @@
                     <h1>【残業申請】</h1>
                   </div>
                   <div class="modal-body">
-                    <%= form_with(model: @request, url: requests_path, method: :post, local: true) do |f| %>
+                    <%= form_with(url: requests_path, method: :post, local: true) do |f| %>
                       <%= f.fields_for :requests do |r| %>
                         <%= r.hidden_field :applicant, value: current_user.id %>
                         <%= r.hidden_field :request_date, value: day.worked_on %>
@@ -370,9 +368,9 @@
           <% end %>
           </td>
         <td><%=  %></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><%= day.finish_time %></td>
+        <td><%= day.finish_time %></td>
+        <td><%= day.overtime %></td>
         <td><%=  %></td>
         <td><% if day.status3.blank? %>
             <% else %>

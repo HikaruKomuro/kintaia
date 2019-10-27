@@ -387,9 +387,10 @@
                       <%= $statuses[@attendance1.status1] %>
                     <% end %>
         <% if current_user?(@user) %>            
-          <%= form_with(model: @request, url: requests_path(applicant: current_user, request_date: @first_day, category: 1), method: :post, local: true) do |f| %>
+          <%= form_with(url: requests_path(applicant: current_user, request_date: @first_day, category: 1), method: :post, local: true) do |f| %>
             <%= f.select :superior, @users.pluck(:name), class: "form-control" %><br>
             <%= f.submit "申請", class: "btn btn-primary" %>
+            
           <% end %>
         <% end %>
       </td>

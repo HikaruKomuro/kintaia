@@ -7,9 +7,10 @@ class RequestsController < ApplicationController
 		@request.save
 		@user_applied = User.find_by(id: params[:requests][:applicant])
 		@worked_on = @user_applied.attendances.find_by(worked_on: params[:requests][:request_date])
-		s = params[:requests][:category]
-		@worked_on.update("status#{s}": 1)
+		c = params[:requests][:category]
+		@worked_on.update("status#{c}": 1)
 		@worked_on.update(finish_time: @request.finish_time)
+		@worked_on.update("note#{c}": @request.note)
 		
     basic_end_mtime = @user_applied.designated_work_end_time.hour*60 + @user_applied.designated_work_end_time.min
     over_end_mtime = @worked_on.finish_time.hour*60 + @worked_on.finish_time.min

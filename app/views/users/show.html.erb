@@ -367,11 +367,11 @@
             <% @total_worked_time = @total_worked_time.to_f + str_times.to_f %>
           <% end %>
           </td>
-        <td><%=  %></td>
-        <td><%= day.finish_time %></td>
-        <td><%= day.finish_time %></td>
+        <td><%= day.note2 %></td>
+        <td><%= day.finish_time.try(:strftime,"%H") %></td>
+        <td><%= day.finish_time.try(:strftime,"%M") %></td>
         <td><%= day.overtime %></td>
-        <td><%=  %></td>
+        <td><%= day.note3 %></td>
         <td><% if day.status3.blank? %>
             <% else %>
               残業申請<%= $statuses[day.status3] %>

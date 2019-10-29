@@ -29,6 +29,7 @@
   </table>
 </div>
 
+
 <% if current_user?(@user) %>
   <% if superior_user? %>
     <% if @requests1.count >= 1 %>
@@ -84,11 +85,10 @@
     
     
     <% if @requests2.blank? %>
-     <a data-toggle="modal" href="#change-worked-time">【勤怠変更申請のお知らせ】</a><br>
-       <% else %>
-     <a data-toggle="modal" href="#change-worked-time"><font color="red">【勤怠変更申請のお知らせ】<span class="border1"><%= @requests2.count %>件の通知があります</span></font></a><br>
-   
-    <% end %>
+     <a>【勤怠変更申請のお知らせ】</a>
+    <% else %>
+     <a data-toggle="modal" href="#change-worked-time"><font color="red">【勤怠変更申請のお知らせ】<span class="border1"><%= @requests2.count %>件の通知があります</span></font></a>
+    <% end %><br>
     
     <div class="modal" id="change-worked-time" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-daialog container">
@@ -129,7 +129,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <% @requests2.where(applicant: au).each do |a| %>
+                  <% @requests2.where(applicant: au).each_with_index do |a, index| %>
                     <tr>
                       <td class="center"><%= a.request_date.strftime("%-m/%-d") %></td>
                       <td class="center">
@@ -141,20 +141,22 @@
                           <%= $week[a.request_date.wday] %>
                         <% end %>
                       </td>
-                      <td><%=  %></td>
-                      <td><%=  %></td>
-                      <td><%=  %></td>
-                      <td><%=  %></td>
-                      <td><%=  %></td>
-                      <td><%=  %></td>
-                      <td><%=  %></td>
-                      <td><%=  %></td>
-                      <td><%=  %></td>
+                      
+                      <td><%= a_user(au, a.request_date).started_at.try(:hour) %></td>
+                      <td><%= a_user(au, a.request_date).started_at.try(:min) %></td>
+                      <td><%= a_user(au, a.request_date).finished_at.try(:hour) %></td>
+                      <td><%= a_user(au, a.request_date).finished_at.try(:min) %></td>
+                      
+                      <td><%= a.started_at.localtime.hour %></td>
+                      <td><%= a.started_at.localtime.min %></td>
+                      <td><%= a.finished_at.localtime.hour %></td>
+                      <td><%= a.finished_at.localtime.min %></td>
+                      <td><%= a.note %></td>
                       <td>
                         <%= f.select 'status[]', [[$statuses[1],1],[$statuses[2],2],[$statuses[3],3]] %>
                       </td>
                       <td>
-                        <%= f.check_box 'checkbox[]'%>
+                        <%= f.check_box "check_box#{a.applicant}[#{index}]",include_hidden: false %>
                       </td>
                       <td><%= link_to "確認", user_path(a.applicant, date: a.request_date), class: "btn btn-primary" %></td>
                     </tr>
@@ -347,14 +349,14 @@
             <%= $week[day.worked_on.wday] %>
           <% end %>
         </td>
-        <td><%= day.started_at.hour if day.started_at.present? %></td>
+        <td><%= day.started_at.localtime.hour if day.started_at.present? %></td>
         <td><%= start_time(day.started_at).min if day.started_at.present? %></td>
         <td>
           <% if (day.worked_on == Date.current) && day.started_at.nil? && current_user?(@user) %>
             <%= link_to "出勤", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-block" %>
           <% end %>
         </td>
-        <td><%= day.finished_at.hour if day.finished_at.present? %></td>
+        <td><%= day.finished_at.localtime.hour if day.finished_at.present? %></td>
         <td><%= finish_time(day.finished_at).min if day.finished_at.present? %></td>
         <td>
           <% if day.started_at.present? && day.finished_at.nil? && current_user?(@user) %>
@@ -366,19 +368,17 @@
             <%= str_times = worked_time(start_time(day.started_at), finish_time(day.finished_at)) %>
             <% @total_worked_time = @total_worked_time.to_f + str_times.to_f %>
           <% end %>
-          </td>
+        </td>
         <td><%= day.note2 %></td>
-        <td><%= day.finish_time.try(:strftime,"%H") %></td>
-        <td><%= day.finish_time.try(:strftime,"%M") %></td>
+        <td><%= day.finish_time.try(:strftime, "%H") %></td>
+        <td><%= day.finish_time.try(:strftime, "%M") %></td>
         <td><%= day.overtime %></td>
         <td><%= day.note3 %></td>
-        <td><% if day.status3.blank? %>
-            <% else %>
-              残業申請<%= $statuses[day.status3] %>
+        <td><% if day.status2.present? %>
+              勤怠変更:<%= $statuses[day.status2] %><br>
             <% end %>
-            <% if day.status2.blank? %>
-            <% else %>
-              勤怠変更<%= $statuses[day.status2] %>
+            <% if day.status3.present? %>
+              残業申請:<%= $statuses[day.status3] %>
             <% end %>
         </td>
       </tr>
@@ -389,6 +389,7 @@
       <td colspan="8">総合勤務時間　：<%= format_basic_info(@user.basic_time).to_f * @worked_sum %></td>
       <td colspan="7">合計在社時間　：<%= format("%.2f", @total_worked_time.to_f) %></td>
       <td>
+      
         所属長承認：<% if @attendance1.status1.blank? %>
                       <%= $statuses[0] %>
                     <% else %>

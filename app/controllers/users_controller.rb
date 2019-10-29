@@ -93,13 +93,56 @@ class UsersController < ApplicationController
     @users = User.search(params[:search])
   end
   
+  def create_request
     
+		@superior = params[:superior]
+		@superior.each do |key, value|
+			if value.present? && params[:note][key].present?
+				if params[:started_at][key]["(4i)"].present? && params[:started_at][key]["(5i)"].present?
+					if params[:finished_at][key]["(4i)"].present? && params[:finished_at][key]["(5i)"].present?
+		        @user = User.find_by(name: value)
+						@request = @user.requests.new(request_params)
+						@request.request_date = params[:request_date][key]
+						
+						@request.note = params[:note][key]
+						@request.started_at = Time.local(
+						  @request.request_date.year.to_s,
+						  @request.request_date.month.to_s,
+						  @request.request_date.day.to_s,
+						  params[:started_at][key]["(4i)"].to_i,
+						  params[:started_at][key]["(5i)"].to_i)
+						  
+						@request.finished_at = Time.local(
+						  @request.request_date.year,
+						  @request.request_date.month,
+						  @request.request_date.day,
+						  params[:finished_at][key]["(4i)"].to_s,
+						  params[:finished_at][key]["(5i)"].to_s)
+						
+						@request.save
+						@applied_user = User.find(params[:applicant])
+				
+        		@worked_on = @applied_user.attendances.find_by(worked_on: params[:request_date][key])
+        		c = params[:category]
+        		@worked_on.update("status#{c}": 1)
+        		@worked_on.update("note#{c}": @request.note)
+					end
+				end
+			end
+		end
+		redirect_to user_path
+  end
   
+ 
   
   private
 
     def user_params
       params.require(:user).permit(:name, :email, :department, :password, :password_confirmation)
+    end
+    
+    def request_params
+			params.permit(:request_date, :applicant, :category, :note, :finish_time)
     end
     
     def basic_info_params

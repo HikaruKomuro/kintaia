@@ -7,4 +7,8 @@ module UsersHelper
     @user.superior > 1
   end
     
+  def a_user(id, date)
+    User.find(id).attendances.find_by(worked_on: date)
+  end
+  
 end

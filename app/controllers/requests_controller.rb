@@ -11,12 +11,21 @@ class RequestsController < ApplicationController
 		c = params[:requests][:category]
 		@worked_on.update("status#{c}": 1)
 		@worked_on.update(finish_time: @request.finish_time)
-		@worked_on.update("note#{c}": @request.note)
+		if c != "1"
+			@worked_on.update("note#{c}": @request.note)
+			if c == "3"
+		    basic_end_mtime = @applied_user.designated_work_end_time.hour*60 + @applied_user.designated_work_end_time.min
+		    if params[:change_date] == "1"
+		    	
+		    	over_end_mtime = 24*60 + @worked_on.finish_time.hour*60 + @worked_on.finish_time.min
+		    else
+		    	over_end_mtime = @worked_on.finish_time.hour*60 + @worked_on.finish_time.min
+		    end
+		    @worked_on.update(overtime: (over_end_mtime - basic_end_mtime)/(60.00).floor(2))
+			end
+			
+		end
 		
-    basic_end_mtime = @applied_user.designated_work_end_time.hour*60 + @applied_user.designated_work_end_time.min
-    over_end_mtime = @worked_on.finish_time.hour*60 + @worked_on.finish_time.min
-    @worked_on.update(overtime: (over_end_mtime - basic_end_mtime)/(60.00).floor(2))
-
 		redirect_to user_path
 	end
 	
@@ -40,14 +49,18 @@ class RequestsController < ApplicationController
 						@applied_user = User.find(r.applicant).attendances.find_by(worked_on: r.request_date)
 						@applied_user.update("status#{c}": 2)
 						if r.started_at.present?
-							@applied_user.update(started_at: r.started_at)
-							@applied_user.update(finished_at: r.finished_at)
+							@applied_user.update(started_at: r.started_at, finished_at: r.finished_at)
 						end
 						r.destroy
 					elsif @statuses[s] == "3"
 						@applied_user = User.find(r.applicant).attendances.find_by(worked_on: r.request_date)
 						@applied_user.update("status#{c}": 3)
-						@applied_user.update("note#{c}": nil)
+						if c != "1"
+							@applied_user.update("note#{c}": nil)
+							if c == "3"
+								@applied_user.update(finish_time: nil, overtime: nil)
+							end
+						end
 						r.destroy
 					end
 				end

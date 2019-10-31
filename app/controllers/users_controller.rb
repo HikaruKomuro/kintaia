@@ -112,13 +112,23 @@ class UsersController < ApplicationController
 						  params[:started_at][key]["(4i)"].to_i,
 						  params[:started_at][key]["(5i)"].to_i)
 						  
+						  if params[:change_date][key] == "1"
+						    @request.finished_at = Time.local(
+						  @request.request_date.year,
+						  @request.request_date.month,
+						  @request.request_date.day,
+						  params[:finished_at][key]["(4i)"].to_i,
+						  params[:finished_at][key]["(5i)"].to_i)
+						  
+						  else
 						@request.finished_at = Time.local(
 						  @request.request_date.year,
 						  @request.request_date.month,
 						  @request.request_date.day,
-						  params[:finished_at][key]["(4i)"].to_s,
-						  params[:finished_at][key]["(5i)"].to_s)
-						
+						  params[:finished_at][key]["(4i)"].to_i,
+						  params[:finished_at][key]["(5i)"].to_i)
+						end
+						debugger
 						@request.save
 						@applied_user = User.find(params[:applicant])
 				

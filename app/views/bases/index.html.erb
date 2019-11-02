@@ -52,11 +52,11 @@
   
 <div class="collapse" id="collapse">
   <%= form_with(scope: :base, url: bases_path, local:true, method: :post) do |f| %>
-  <%= f.label :base_number, class: "label-form" %>
+  <%= f.label :base_number, "拠点番号",class: "label-form" %>
   <%= f.number_field :base_number, class: "form-control" %>
-  <%= f.label :base_name, class: "label-form" %>
+  <%= f.label :base_name, "拠点名", class: "label-form" %>
   <%= f.text_field :base_name, class: "form-control" %>
-  <%= f.label :work_type, class: "label-form" %>
+  <%= f.label :work_type, "勤怠種類", class: "label-form" %>
   <%= f.text_field :work_type, class: "form-control" %>
   <%= f.submit "拠点情報追加", class: "btn btn-primary btn-lg" %>
   <% end %>

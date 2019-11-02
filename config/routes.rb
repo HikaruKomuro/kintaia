@@ -21,6 +21,7 @@ Rails.application.routes.draw do
       get 'index_working'
       resources :requests, only: [:create, :destroy]
       post 'create_request'
+      get 'one_month_output'
     end
     resources :attendances, only: [:update]
     collection { post :import }

@@ -19,7 +19,7 @@
       <th class="center">初日 : <%= l(@first_day, format: :short) %></th>
     </tr>
     <tr>
-      <th class="center">所属 : <%= @user.department.present? ? @user.department : "未公開" %></th>
+      <th class="center">所属 : <%= @user.affiliation.present? ? @user.affiliation : "未所属" %></th>
       <th class="center">名前 : <%= @user.name %></th>
       <th>コード</th>
       <th><%= %></th>
@@ -130,6 +130,8 @@
                 </thead>
                 <tbody>
                   <% @requests2.where(applicant: au).each_with_index do |a, index| %>
+                    <%= f.hidden_field :started_at, value: a.started_at %>
+                    <%= f.hidden_field :finished_at, value: a.finished_at %>
                     <tr>
                       <td class="center"><%= a.request_date.strftime("%-m/%-d") %></td>
                       <td class="center">
@@ -142,10 +144,10 @@
                         <% end %>
                       </td>
                       
-                      <td><%= a_user(au, a.request_date).started_at.try(:hour) %></td>
-                      <td><%= a_user(au, a.request_date).started_at.try(:min) %></td>
-                      <td><%= a_user(au, a.request_date).finished_at.try(:hour) %></td>
-                      <td><%= a_user(au, a.request_date).finished_at.try(:min) %></td>
+                      <td><%= a_user(au, a.request_date).first_started_at.try(:hour) %></td>
+                      <td><%= a_user(au, a.request_date).first_started_at.try(:min) %></td>
+                      <td><%= a_user(au, a.request_date).first_finished_at.try(:hour) %></td>
+                      <td><%= a_user(au, a.request_date).first_finished_at.try(:min) %></td>
                       
                       <td><%= a.started_at.localtime.hour %></td>
                       <td><%= a.started_at.localtime.min %></td>
@@ -248,8 +250,36 @@
     
   <% end %>
   <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-primary" %>
-  <%= link_to "CSVを出力", "#", class: "btn btn-primary" %><br>
-  <%= link_to "勤怠修正ログ（承認済）", "#", class: "btn btn-primary" %>
+  <%= link_to "CSVを出力", one_month_output_user_path(format: :csv), class: "btn btn-primary" %>
+
+  <a data-toggle ="modal" href="#c2log" class="btn btn-primary">勤怠修正ログ（承認済）</a>
+    <div class="modal" id="c2log">
+      <div class="modal-dailog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <h1>勤怠ログ</h1>
+            <%= link_to "リセット", "#", class: "btn btn-default" %><br>
+            
+            <table class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th>日付</th>
+                  <th>変更前出社時間</th>
+                  <th>変更前退社時間</th>
+                  <th>変更後出社時間</th>
+                  <th>変更後退社時間</th>
+                  <th>指示者</th>
+                  <th>承認</th>
+                </tr>
+              </thead>
+              <tbody>
+     
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
 <% end %>
 
 <table class="table table-bordered">
@@ -296,7 +326,7 @@
                   </div>
                   <div class="modal-body">
                     <%= form_with(url: requests_path, method: :post, local: true) do |f| %>
-                      <%= f.fields_for :requests do |r| %>
+                      <%= f.fields_for @request do |r| %>
                         <%= r.hidden_field :applicant, value: current_user.id %>
                         <%= r.hidden_field :request_date, value: day.worked_on %>
                         <%= r.hidden_field :category, value: 3 %>
@@ -349,15 +379,39 @@
             <%= $week[day.worked_on.wday] %>
           <% end %>
         </td>
-        <td><%= day.started_at.localtime.hour if day.started_at.present? %></td>
-        <td><%= start_time(day.started_at).min if day.started_at.present? %></td>
+        <td>
+          <% if day.started_at.present? %>
+            <%= day.started_at.hour %>
+          <% elsif day.first_started_at.present? %>
+            <%= day.first_started_at.hour %>
+          <% end %>
+        </td>
+        <td>
+          <% if day.started_at.present? %>
+            <%= day.started_at.round_to(15.minutes).min %>
+          <% elsif day.first_started_at.present?%>
+            <%= day.first_started_at.round_to(15.minutes).min %>
+          <% end %>
+        </td>
         <td>
           <% if (day.worked_on == Date.current) && day.started_at.nil? && current_user?(@user) %>
             <%= link_to "出勤", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-block" %>
           <% end %>
         </td>
-        <td><%= day.finished_at.localtime.hour if day.finished_at.present? %></td>
-        <td><%= finish_time(day.finished_at).min if day.finished_at.present? %></td>
+        <td>
+          <% if day.finished_at.present? %>
+            <%= day.finished_at.hour %>
+          <% elsif day.first_finished_at.present? %>
+            <%= day.first_finished_at.hour %>
+          <% end %>
+        </td>
+        <td>
+          <% if day.finished_at.present? %>
+            <%= day.finished_at.round_to(15.minutes).min %>
+          <% elsif day.first_finished_at.present?%>
+            <%= day.first_finished_at.round_to(15.minutes).min %>
+          <% end %>
+        </td>
         <td>
           <% if day.started_at.present? && day.finished_at.nil? && current_user?(@user) %>
             <%= link_to "退勤", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-block" %>
@@ -365,7 +419,7 @@
         </td>
         <td>
           <% if day.started_at.present? && day.finished_at.present? %>
-            <%= str_times = worked_time(start_time(day.started_at), finish_time(day.finished_at)) %>
+            <%= str_times = worked_time(start_time(day.started_at), finish_time(day.finished_at), day.change_date) %>
             <% @total_worked_time = @total_worked_time.to_f + str_times.to_f %>
           <% end %>
         </td>
@@ -374,16 +428,18 @@
         <td><%= day.finish_time.try(:strftime, "%M") %></td>
         <td><%= day.overtime %></td>
         <td><%= day.note3 %></td>
-        <td><% if day.status2.present? %>
-              勤怠変更:<%= $statuses[day.status2] %><br>
-            <% end %>
-            <% if day.status3.present? %>
-              残業申請:<%= $statuses[day.status3] %>
-            <% end %>
+        <td>
+          <% if day.status2.present? %>
+            勤怠変更：<%= $statuses[day.status2] %><br>
+          <% end %>
+          <% if day.status3.present? %>
+            残業申請：<%= $statuses[day.status3] %>
+          <% end %>
         </td>
       </tr>
     <% end %>
   </tbody>
+  
   <tfooter>
     <tr>
       <td colspan="8">総合勤務時間　：<%= format_basic_info(@user.basic_time).to_f * @worked_sum %></td>

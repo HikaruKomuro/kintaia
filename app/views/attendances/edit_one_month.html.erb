@@ -3,7 +3,8 @@
 <h1>勤怠編集</h1>
 
 
-<%= form_with(url: create_request_user_path, local: true, method: :post) do |f| %>
+<%= form_with(url: requests_path, local: true, method: :post) do |f| %>
+
   <table class="table table-bordered table-striped">
     <thead>
       <tr>
@@ -18,6 +19,7 @@
     </thead>
     <tbody>
       <% @attendances.each_with_index do |day, index| %>
+        <%= f.fields_for @request do |r| %>
         <tr>
           <td><%= l(day.worked_on, format: :short) %></td>
           <td>
@@ -29,6 +31,7 @@
               <%= $week[day.worked_on.wday] %>
             <% end %>
           </td>
+          
           <% if !current_user.admin? && (Date.current < day.worked_on) %>
               <td><%= f.time_select :started_at, {include_blank: true, disabled: true} %></td>
               <td><%= f.time_select :finished_at, {include_blank: true , disabled: true} %></td>
@@ -42,10 +45,11 @@
               <td><%= f.text_field "note[#{index}]", class: 'form-control' %></td>
               <td><%= f.select "superior[#{index}]", @users.pluck(:name), include_blank: true %></td>
               <%= f.hidden_field "request_date[#{index}]", value: day.worked_on %>
-              <%= f.hidden_field :category, value: 2 %>
-              <%= f.hidden_field :applicant, value: params[:id] %>
+              <%= r.hidden_field :category, value: 2 %>
+              <%= r.hidden_field :applicant, value: params[:id] %>
             <% end %>
         </tr>
+        <% end %>
       <% end %>
     </tbody>
   </table>

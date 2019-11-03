@@ -10,7 +10,7 @@ class User < ApplicationRecord
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   validates :email, presence: true, length: { maximum: 100 },
               format: { with: VALID_EMAIL_REGEX },uniqueness: true
-  validates :department, length: { in: 2..30 }, allow_blank: true
+  validates :affiliation, length: { in: 2..30 }, allow_blank: true
   validates :basic_time, presence: true
   validates :work_time, presence: true
   validates :designated_work_start_time, presence: true
@@ -59,14 +59,14 @@ class User < ApplicationRecord
     
   def self.import(file)
     CSV.foreach(file.path, headers: true) do |row|
-      user = find_by(id: row["id"]) || new
+      user = new
       user.attributes = row.to_hash.slice(*updatable_attributes)
-      user.save
+      user.save!
     end
   end
     
   def self.updatable_attributes
-    ["name", "email", "affiliation", "employee_number", "uid", "basic_work_time", 
+    ["name", "email", "affiliation", "employee_number", "uid", "basic_time", 
     "designated_work_start_time", "designated_work_end_time", "superior", "admin", "password"]
   end
   

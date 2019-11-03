@@ -4,7 +4,7 @@ module AttendancesHelper
     if change_date == 1
       format("%.2f", (finish1 - start1)/3600)
     else
-      format("%.2f", (finish.hour*60 + finish.min - start.hour*60 - start.min)/60.00)
+      format("%.2f", (finish1.hour*60 + finish1.min - start1.hour*60 - start1.min)/60.00)
     end
   end
   

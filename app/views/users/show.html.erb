@@ -33,9 +33,9 @@
 <% if current_user?(@user) %>
   <% if superior_user? %>
     <% if @requests1.count >= 1 %>
-      <a data-toggle="modal" href="#modalsuperior"><font color="red">【所属長承認申請のお知らせ】<span class="border1"><%= @requests1.count %>件の通知があります</span></font></a><br>
-    <% else %>
-      <a>【所属長承認申請のお知らせ】</a><br>
+      <a data-toggle="modal" href="#modalsuperior">
+        <font color="red">【所属長承認申請のお知らせ】<span class="border1"><%= @requests1.count %>件の通知があります</span></font>
+        </a><br>
     <% end %>
     
     <div class="modal" id="modalsuperior" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -84,10 +84,9 @@
     
     
     
-    <% if @requests2.blank? %>
-     <a>【勤怠変更申請のお知らせ】</a>
-    <% else %>
-     <a data-toggle="modal" href="#change-worked-time"><font color="red">【勤怠変更申請のお知らせ】<span class="border1"><%= @requests2.count %>件の通知があります</span></font></a>
+    <% if @requests2.count >= 1 %>
+      <a data-toggle="modal" href="#change-worked-time">
+        <font color="red">【勤怠変更申請のお知らせ】<span class="border1"><%= @requests2.count %>件の通知があります</span></font></a>
     <% end %><br>
     
     <div class="modal" id="change-worked-time" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -143,23 +142,17 @@
                           <%= $week[a.request_date.wday] %>
                         <% end %>
                       </td>
-                      
                       <td><%= a_user(au, a.request_date).first_started_at.try(:hour) %></td>
                       <td><%= a_user(au, a.request_date).first_started_at.try(:min) %></td>
                       <td><%= a_user(au, a.request_date).first_finished_at.try(:hour) %></td>
                       <td><%= a_user(au, a.request_date).first_finished_at.try(:min) %></td>
-                      
                       <td><%= a.started_at.localtime.hour %></td>
                       <td><%= a.started_at.localtime.min %></td>
                       <td><%= a.finished_at.localtime.hour %></td>
                       <td><%= a.finished_at.localtime.min %></td>
                       <td><%= a.note %></td>
-                      <td>
-                        <%= f.select 'status[]', [[$statuses[1],1],[$statuses[2],2],[$statuses[3],3]] %>
-                      </td>
-                      <td>
-                        <%= f.check_box "check_box#{a.applicant}[#{index}]",include_hidden: false %>
-                      </td>
+                      <td><%= f.select 'status[]', [[$statuses[1],1],[$statuses[2],2],[$statuses[3],3]] %></td>
+                      <td><%= f.check_box "check_box#{a.applicant}[#{index}]",include_hidden: false %></td>
                       <td><%= link_to "確認", user_path(a.applicant, date: a.request_date), class: "btn btn-primary" %></td>
                     </tr>
                   <% end %>  
@@ -178,10 +171,10 @@
     
     
     <% if @requests3.count >= 1 %>
-      <a data-toggle="modal" href="#overtime"><font color="red">【残業申請のお知らせ】<span class="border1"><%= @requests3.count %>件の通知があります</span></font></a><br>
-    <% else %>
-      <a>【残業申請のお知らせ】</a><br>
+      <a data-toggle="modal" href="#overtime">
+        <font color="red">【残業申請のお知らせ】<span class="border1"><%= @requests3.count %>件の通知があります</span></font></a><br>
     <% end %>
+    
     <div class="modal" id="overtime" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-daialog container">
         <div class="modal-content">
@@ -324,7 +317,7 @@
                               <td><%= r.time_select :finish_time,{ minute_step: 15 } %> </td>
                               <td><%= f.check_box :change_date %></td>
                               <td><%= r.text_field :note %></td>
-                              <td><%= f.select :superior, @users.pluck(:name) %></td>
+                              <td><%= f.select :superior, @users.where.not(id: @user.id).pluck(:name) %></td>
                             </tr>
                           </tbody>
                         </table>
@@ -413,7 +406,6 @@
       <td colspan="8">総合勤務時間　：<%= format_basic_info(@user.basic_time).to_f * @worked_sum %></td>
       <td colspan="7">合計在社時間　：<%= format("%.2f", @total_worked_time.to_f) %></td>
       <td>
-      
         所属長承認：<% if @attendance1.status1.blank? %>
                       <%= $statuses[0] %>
                     <% else %>
@@ -425,7 +417,7 @@
               <%= r.hidden_field :applicant, value: current_user.id %>
               <%= r.hidden_field :request_date, value: @first_day %>
               <%= r.hidden_field :category, value: 1 %>
-              <%= f.select :superior, @users.pluck(:name), class: "form-control" %>
+              <%= f.select :superior, @users.where.not(id: @user.id).pluck(:name), class: "form-control" %>
             <% end %><br>
             <%= f.submit "申請", class: "btn btn-primary" %>
           <% end %>
@@ -434,7 +426,3 @@
     </tr>
   </tfooter>
 </table>
-
-
-
-

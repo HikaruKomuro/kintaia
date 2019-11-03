@@ -43,7 +43,7 @@
               <td><%= f.time_select "finished_at[#{index}]",{include_blank: true, minute_step: 15} %></td>
               <td><%= f.check_box "change_date[#{index}]"%></td>
               <td><%= f.text_field "note[#{index}]", class: 'form-control' %></td>
-              <td><%= f.select "superior[#{index}]", @users.pluck(:name), include_blank: true %></td>
+              <td><%= f.select "superior[#{index}]", @users.where.not(id: @user.id).pluck(:name), include_blank: true %></td>
               <%= f.hidden_field "request_date[#{index}]", value: day.worked_on %>
               <%= r.hidden_field :category, value: 2 %>
               <%= r.hidden_field :applicant, value: params[:id] %>

@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  get 'logs/update'
+
   get 'overtimes/create'
 
   get '/signup', to: 'users#new'  #新規ユーザー登録
@@ -22,6 +24,7 @@ Rails.application.routes.draw do
       resources :requests, only: [:create, :destroy]
       post 'create_request'
       get 'one_month_output'
+      get 'approval_logs'
     end
     resources :attendances, only: [:update]
     collection { post :import }

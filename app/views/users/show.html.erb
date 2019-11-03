@@ -242,44 +242,12 @@
         </div>
       </div>
     </div>
-
-    
-    
-    
-    
-    
   <% end %>
+  
   <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-primary" %>
   <%= link_to "CSVを出力", one_month_output_user_path(format: :csv), class: "btn btn-primary" %>
-
-  <a data-toggle ="modal" href="#c2log" class="btn btn-primary">勤怠修正ログ（承認済）</a>
-    <div class="modal" id="c2log">
-      <div class="modal-dailog">
-        <div class="modal-content">
-          <div class="modal-body">
-            <h1>勤怠ログ</h1>
-            <%= link_to "リセット", "#", class: "btn btn-default" %><br>
-            
-            <table class="table table-bordered table-striped">
-              <thead>
-                <tr>
-                  <th>日付</th>
-                  <th>変更前出社時間</th>
-                  <th>変更前退社時間</th>
-                  <th>変更後出社時間</th>
-                  <th>変更後退社時間</th>
-                  <th>指示者</th>
-                  <th>承認</th>
-                </tr>
-              </thead>
-              <tbody>
-     
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
+  <%= link_to "勤怠修正ログ（承認済）", approval_logs_user_path, class: "btn btn-primary" %>
+  
 <% end %>
 
 <table class="table table-bordered">
@@ -419,7 +387,7 @@
         </td>
         <td>
           <% if day.started_at.present? && day.finished_at.present? %>
-            <%= str_times = worked_time(start_time(day.started_at), finish_time(day.finished_at), day.change_date) %>
+            <%= str_times = worked_time(day.started_at, day.finished_at, day.change_date) %>
             <% @total_worked_time = @total_worked_time.to_f + str_times.to_f %>
           <% end %>
         </td>
@@ -452,8 +420,8 @@
                       <%= $statuses[@attendance1.status1] %>
                     <% end %>
         <% if current_user?(@user) %>            
-          <%= form_with(model: @request, url: requests_path, method: :post, local: true) do |f| %>
-            <%= f.fields_for :requests do |r| %>
+          <%= form_with(url: requests_path, method: :post, local: true) do |f| %>
+            <%= f.fields_for :request do |r| %>
               <%= r.hidden_field :applicant, value: current_user.id %>
               <%= r.hidden_field :request_date, value: @first_day %>
               <%= r.hidden_field :category, value: 1 %>
@@ -466,4 +434,7 @@
     </tr>
   </tfooter>
 </table>
+
+
+
 

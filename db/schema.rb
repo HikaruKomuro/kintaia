@@ -56,7 +56,7 @@ ActiveRecord::Schema.define(version: 20191031075455) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "request_date"
-    t.boolean "confirmation"
+    t.integer "change_date"
     t.integer "status"
     t.integer "category"
     t.integer "applicant"
@@ -76,8 +76,8 @@ ActiveRecord::Schema.define(version: 20191031075455) do
     t.string "remember_digest"
     t.boolean "admin", default: false
     t.string "department"
-    t.datetime "basic_time", default: "2019-10-31 23:00:00"
-    t.datetime "work_time", default: "2019-10-31 22:30:00"
+    t.datetime "basic_time", default: "2019-11-01 23:00:00"
+    t.datetime "work_time", default: "2019-11-01 22:30:00"
     t.string "affiliation"
     t.integer "employee_number"
     t.string "uid"

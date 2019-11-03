@@ -14,7 +14,7 @@ class Attendance < ApplicationRecord
   
   def started_at_and_finished_at
     if started_at.present? && finished_at.present?
-      errors.add(:started_at, "より早い時間は無効です") if finished_at < started_at
+      errors.add(:started_at, "より早い時間は無効です") if (finished_at < started_at) && (change_date != 1)
     end
   end
   

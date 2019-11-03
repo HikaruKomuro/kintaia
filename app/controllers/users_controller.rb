@@ -53,6 +53,9 @@ class UsersController < ApplicationController
       end
     end
   end
+  
+  def approval_logs
+  end
 
   def new
     @user = User.new

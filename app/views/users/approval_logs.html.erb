@@ -1,0 +1,34 @@
+
+<h1>勤怠ログ</h1>
+<%= form_with (user_path, id="c2log" local: true) do |f| %>
+<%= f.submit "リセット", class: "btn btn-default" %>
+<%= f.date_select :date, { discard_day:true } %>
+<% end %>
+
+<table class="table table-bordered table-striped">
+<thead>
+  <tr>
+    <th>日付</th>
+    <th>変更前出社時間</th>
+    <th>変更前退社時間</th>
+    <th>変更後出社時間</th>
+    <th>変更後退社時間</th>
+    <th>指示者</th>
+    <th>承認</th>
+  </tr>
+</thead>
+<tbody>
+  <% @user.logs.each do |l| %>
+    <% attendance = @user.attendances.find_by(worked_on: l.date) %>
+    <tr>
+      <td><%= l.date %></td>
+      <td><%= attendance.first_started_at.try(:strftime, "%H:%M") %></td>
+      <td><%= attendance.first_finished_at.try(:strftime, "%H:%M") %></td>
+      <td><%= attendance.started_at.try(:strftime, "%H:%M") %></td>
+      <td><%= attendance.finished_at.try(:strftime, "%H:%M") %></td>
+      <td><%= attendance.superior %></td>
+      <td><%= attendance.approval_date %></td>
+    </tr>
+  <% end %>
+</tbody>
+</table>

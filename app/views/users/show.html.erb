@@ -22,7 +22,7 @@
       <th class="center">所属 : <%= @user.affiliation.present? ? @user.affiliation : "未所属" %></th>
       <th class="center">名前 : <%= @user.name %></th>
       <th>コード</th>
-      <th><%= %></th>
+      <th><%= @user.employee_number %></th>
       <th class="center">出席日数：<%= @worked_sum %>日</th>
       <th class="center">締め : <%= l(@last_day, format: :short) %></th>
     </tr>

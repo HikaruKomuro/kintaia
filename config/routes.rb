@@ -25,6 +25,7 @@ Rails.application.routes.draw do
       post 'create_request'
       get 'one_month_output'
       get 'approval_logs'
+      patch 'logs'
     end
     resources :attendances, only: [:update]
     collection { post :import }

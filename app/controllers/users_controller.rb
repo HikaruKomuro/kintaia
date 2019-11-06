@@ -55,7 +55,6 @@ class UsersController < ApplicationController
   end
   
   def approval_logs
-    
     @attendances_all = @user.attendances.where(status2: 2).order(:worked_on)
     @attendances = @attendances_all.where(worked_on: @first_day..@last_day)
   end
@@ -72,7 +71,6 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
-      log_in @user
       flash[:success] = '新規作成に成功しました。'
       redirect_to @user
     else
@@ -84,7 +82,7 @@ class UsersController < ApplicationController
   end
 
   def update
-    if @user.update_attributes(user_params)
+    if @user.update_attributes!(user_params)
       flash[:success] = "ユーザー情報を更新しました。"
       redirect_to users_url
     else
@@ -99,9 +97,6 @@ class UsersController < ApplicationController
   end
 
   def edit_basic_info
-  end
-
-  def update_basic_info
   end
 
   def update_basic_info
@@ -141,14 +136,16 @@ class UsersController < ApplicationController
       end
     end
     
-    # 正しいユーザーかどうか確認
-    def correct_user
-      @user = User.find(params[:id])
-      redirect_to(root_url) unless @user == current_user
-    end
-    
-    # 管理者かどうか確認
+     # 管理者かどうか確認
     def admin_user
      redirect_to(root_url) unless current_user.admin?
     end
+    
+    # 正しいユーザーかどうか確認
+    def correct_user
+      @user = User.find(params[:id])
+      redirect_to(root_url) unless (@user == current_user) || current_user.admin?
+    end
+    
+   
 end

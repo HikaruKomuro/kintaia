@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :edit, :update, :destroy, :edit_basic_info, :update_basic_info, :one_month_output, :approval_logs, :logs]
+  before_action :set_user, only: [:show, :edit, :update, :destroy, :edit_basic_info, :update_basic_info, :one_month_output, :approval_logs, :logs, :superior_user?]
   before_action :logged_in_user, only: [:index, :edit, :update, :destroy, :edit_basic_info, :update_basic_info]
   before_action :correct_user, only: [:edit, :update]
   before_action :admin_user, only: [:destroy, :edit_basic_info, :update_basic_info]
@@ -71,6 +71,7 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
+      log_in @user
       flash[:success] = '新規作成に成功しました。'
       redirect_to @user
     else
@@ -111,6 +112,8 @@ class UsersController < ApplicationController
   def search
     @users = User.search(params[:search])
   end
+  
+  
   
  
   

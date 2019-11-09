@@ -2,9 +2,9 @@ class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy, :edit_basic_info, :update_basic_info, :one_month_output, :approval_logs, :logs, :superior_user?]
   before_action :logged_in_user, only: [:index, :edit, :update, :destroy, :edit_basic_info, :update_basic_info]
   before_action :correct_user, only: [:edit, :update]
-  before_action :admin_user, only: [:destroy, :edit_basic_info, :update_basic_info]
+  before_action :admin_user, only: [:destroy, :edit_basic_info, :update_basic_info, :index, :import, :index_working, :one_month_output, :approval_logs, :logs]
   before_action :set_one_month, only: [:show, :one_month_output, :approval_logs]
-  before_action
+  # before_action :confirm_show, only: :show
 
 
 
@@ -140,10 +140,6 @@ class UsersController < ApplicationController
       end
     end
     
-     # 管理者かどうか確認
-    def admin_user
-     redirect_to(root_url) unless current_user.admin?
-    end
     
    
     # 正しいユーザーかどうか確認
@@ -152,5 +148,8 @@ class UsersController < ApplicationController
       redirect_to(root_url) unless (@user == current_user) || current_user.admin?
     end
     
+    # def confirm_show
+    #   redirect_to(root_url) unless ( logged_in_user && correct_user ) || current_user.requests.pluck(:applicant).include?(@user.id)
+    # end
    
 end

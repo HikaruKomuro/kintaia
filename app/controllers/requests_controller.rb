@@ -32,30 +32,32 @@ class RequestsController < ApplicationController
 				end
 			end
 		
-		else
+		elsif params[:request][:category] == "1"
 			@user = User.find_by(name: params[:superior])
 			@request = @user.requests.new(request_params)
 			@request.save
 			@applied_user = User.find_by(id: params[:request][:applicant])
 			@worked_on = @applied_user.attendances.find_by(worked_on: params[:request][:request_date])
-			c = params[:request][:category]
-			@worked_on.update("status#{c}": 1)
-			@worked_on.update(finish_time: @request.finish_time)
-			if c != "1"
-				@worked_on.update("note#{c}": @request.note)
-				if c == "3"
-			    basic_end_mtime = @applied_user.designated_work_end_time.hour*60 + @applied_user.designated_work_end_time.min
-			    if params[:change_date] == "1"
-			    	over_end_mtime = 24*60 + @worked_on.finish_time.hour*60 + @worked_on.finish_time.min
-			    else
-			    	over_end_mtime = @worked_on.finish_time.hour*60 + @worked_on.finish_time.min
-			    end
-			    @worked_on.update(overtime: (over_end_mtime - basic_end_mtime)/(60.00).floor(2))
-				end
+			@worked_on.update(status1: 1)
+			
+				
+		elsif params[:request][:category] == "3"
+			@applied_user = User.find_by(id: params[:request][:applicant])
+			@user = User.find_by(name: params[:superior])
+			basic_end_mtime = @applied_user.designated_work_end_time.hour*60 + @applied_user.designated_work_end_time.min
+			if params[:change_date] == "1"
+				over_end_mtime = 24*60 + params[:request]["finish_time(4i)"].to_i*60 + params[:request]["finish_time(5i)"].to_i
+	  	else
+	    	over_end_mtime = params[:request]["finish_time(4i)"].to_i*60 + params[:request]["finish_time(5i)"].to_i
+	    end
+	    if (over_time = over_end_mtime - basic_end_mtime) > 0
+				@request = @user.requests.new(request_params)
+				@request.save
+				@worked_on = @applied_user.attendances.find_by(worked_on: params[:request][:request_date])
+				@worked_on.update(finish_time: @request.finish_time, overtime: over_time/60.00, note3: @request.note)
 			end
 		end
 		redirect_to user_path
-		
 	end
 	
 	

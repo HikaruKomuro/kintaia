@@ -12,7 +12,7 @@ User.create!(name: "管理者",
              password: "password",
              password_confirmation: "password",
              admin: true,
-             superior: 2)
+             superior: 1)
 
 2.times do |n|
   name  = Faker::Name.name

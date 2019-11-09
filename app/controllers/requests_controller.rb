@@ -70,13 +70,11 @@ class RequestsController < ApplicationController
 		s = 0
 		m = 0
 		pre_applicant = @requests.first.applicant
-		
 		@requests.each do |r|
 			m = 0 if pre_applicant != r.applicant
 			if params["check_box#{r.applicant}"].present?
 				if params["check_box#{r.applicant}"]["#{m}"] == "1"
 					@applied_user = User.find(r.applicant).attendances.find_by(worked_on: r.request_date)
-				
 					if @statuses[s] == "2"
 						@applied_user.update("status#{c}": 2)
 						if c == "2"
@@ -96,7 +94,7 @@ class RequestsController < ApplicationController
 																		finished_at: (r.finished_at - 9*60*60))
 							end
 							@applied_user.update(first_started_at: r.started_at, first_finished_at: r.finished_at) if @applied_user.first_started_at.blank?
-							@date.save if @date = User.find(r.applicant).logs.new(date: r.request_date)
+							@date.save! if @date = User.find(r.applicant).logs.new(date: r.request_date)
 						end
 						r.destroy
 					end

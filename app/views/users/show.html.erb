@@ -211,8 +211,8 @@
                           <%= $week[a.request_date.wday] %>
                         <% end %>
                       </td>
-                      <td><%= User.find(au).attendances.find_by(worked_on: a.request_date).finish_time.strftime("%H:%M") %></td>
-                      <td><%= User.find(au).designated_work_end_time.strftime("%H:%M") %></td>
+                      <td><%= User.find(au).attendances.find_by(worked_on: a.request_date).finish_time.try(:strftime, "%H:%M") %></td>
+                      <td><%= User.find(au).designated_work_end_time.try(:strftime, "%H:%M") %></td>
                       <td><%= User.find(au).attendances.find_by(worked_on: a.request_date).overtime %></td>
                       <td><%= a.note %></td>
                       <td>

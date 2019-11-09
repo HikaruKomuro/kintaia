@@ -11,15 +11,15 @@ UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してくださ
     
     # 出勤時間が未登録であることを判定します。
     if @attendance.started_at.nil?
-      if @attendance.update_attributes(started_at: Time.current.change(sec: 0).round_to(15.minutes))
-        @attendance.update_attributes(first_started_at: Time.current.change(sec: 0).round_to(15.minutes))
+      if @attendance.update_attributes(started_at: DateTime.current.change(sec: 0).round_to(15.minutes))
+        @attendance.update_attributes(first_started_at: DateTime.current.change(sec: 0).round_to(15.minutes))
         flash[:info] = "おはようございます！"
       else
         flash[:danger] = UPDATE_ERROR_MSG
       end
     elsif @attendance.finished_at.nil?
-      if @attendance.update_attributes(finished_at: Time.current.change(sec: 0).round_to(15.minutes))
-        @attendance.update_attributes(first_finished_at: Time.current.change(sec: 0).round_to(15.minutes))
+      if @attendance.update_attributes!(finished_at: DateTime.current.change(sec: 0).round_to(15.minutes))
+        @attendance.update_attributes!(first_finished_at: DateTime.current.change(sec: 0).round_to(15.minutes))
         flash[:info] = "お疲れ様でした。"
       else
         flash[:danger] = UPDATE_ERROR_MSG

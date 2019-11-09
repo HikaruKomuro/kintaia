@@ -4,7 +4,7 @@
 <%= form_with(url: logs_user_path, method: :patch, local: true) do |f| %>
 <%= f.date_select :date , { discard_day: true,
                             start_year: Date.today.year,
-                            end_year: @attendances_all.order(:worked_on).first.worked_on.year } %>
+                            end_year: @attendances_all.first.try(:worked_on).try(:year) } %>
 <%= f.submit "更新", class: "btn btn-primary" %>
 <% end %>
 

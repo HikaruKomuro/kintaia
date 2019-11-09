@@ -4,6 +4,7 @@ class UsersController < ApplicationController
   before_action :correct_user, only: [:edit, :update]
   before_action :admin_user, only: [:destroy, :edit_basic_info, :update_basic_info]
   before_action :set_one_month, only: [:show, :one_month_output, :approval_logs]
+  before_action
 
 
 
@@ -144,6 +145,7 @@ class UsersController < ApplicationController
      redirect_to(root_url) unless current_user.admin?
     end
     
+   
     # 正しいユーザーかどうか確認
     def correct_user
       @user = User.find(params[:id])

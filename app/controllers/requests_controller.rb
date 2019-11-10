@@ -1,7 +1,6 @@
 class RequestsController < ApplicationController
     
 	def create
-		
 		if params[:request][:category] == "2"
 			@superior = params[:superior]
 			@superior.each do |key, value|
@@ -25,8 +24,7 @@ class RequestsController < ApplicationController
 																						  params[:finished_at][key]["(4i)"].to_i,
 																						  params[:finished_at][key]["(5i)"].to_i)
 							@request.save
-	        		c = params[:request][:category]
-	        		@applied_user.update(status2: 1, note2: @request.note)
+	        		@applied_user.update(status2: 1, note2: @request.note, superior2: params[:superior][key])
 						end
 					end
 				end
@@ -37,8 +35,8 @@ class RequestsController < ApplicationController
 			@request = @user.requests.new(request_params)
 			@request.save
 			@applied_user = User.find_by(id: params[:request][:applicant])
-			@worked_on = @applied_user.attendances.find_by(worked_on: params[:request][:request_date])
-			@worked_on.update(status1: 1)
+			@worked_on = @applied_user.attendances.find_by(worked_on: params[:request][:request_date].to_date.beginning_of_month)
+			@worked_on.update(status1: 1, superior1: params[:superior])
 			
 				
 		elsif params[:request][:category] == "3"
@@ -54,8 +52,7 @@ class RequestsController < ApplicationController
 				@request = @user.requests.new(request_params)
 				@request.save
 				@worked_on = @applied_user.attendances.find_by(worked_on: params[:request][:request_date])
-				@worked_on.update(status3: 1)
-				@worked_on = @applied_user.attendances.find_by(worked_on: params[:request][:request_date])
+				@worked_on.update(status3: 1, superior3: params[:superior])
 				@worked_on.update(finish_time: @request.finish_time, overtime: over_time/60.00, note3: @request.note)
 			end
 		end

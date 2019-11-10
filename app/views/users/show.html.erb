@@ -403,10 +403,10 @@
         <td><%= day.note3 %></td>
         <td>
           <% if day.status2.present? %>
-            勤怠変更：<%= $statuses[day.status2] %><br>
+            変更：<%= $statuses[day.status2] %>（<%= day.superior2 %>）<br>
           <% end %>
           <% if day.status3.present? %>
-            残業申請：<%= $statuses[day.status3] %>
+            残業：<%= $statuses[day.status3] %>（<%= day.superior3 %>）
           <% end %>
         </td>
       </tr>
@@ -418,11 +418,12 @@
       <td colspan="8">総合勤務時間　：<%= format("%.2f",(@user.basic_time.hour*60 + @user.basic_time.min) /60.00 *@worked_sum) %></td>
       <td colspan="7">合計在社時間　：<%= format("%.2f", @total_worked_time.to_f) %></td>
       <td>
-        所属長承認：<% if @attendance1.status1.blank? %>
-                      <%= $statuses[0] %>
-                    <% else %>
-                      <%= $statuses[@attendance1.status1] %>
-                    <% end %>
+        所属長承認（<%= @attendance1.superior1 %>）<br>
+        <% if @attendance1.status1.blank? %>
+          <%= $statuses[0] %>
+        <% else %>
+          <%= $statuses[@attendance1.status1] %>
+        <% end %>
         <% if current_user?(@user) %>            
           <%= form_with(url: requests_path, method: :post, local: true) do |f| %>
             <%= f.fields_for :request do |r| %>
@@ -431,7 +432,7 @@
               <%= r.hidden_field :category, value: 1 %>
               <%= f.select :superior, @users.where.not(id: @user.id).pluck(:name), class: "form-control" %>
             <% end %><br>
-            <%= f.submit "申請", class: "btn btn-primary" %>
+            <%= f.submit "申請", class: "btn btn-primary inline" %>
           <% end %>
         <% end %>
       </td>

@@ -3,7 +3,7 @@ class BasesController < ApplicationController
   before_action :admin_user, only: [:index, :create, :update, :destroy]
   
   def index
-    @bases = Base.all
+    @bases = Base.all.order(:id)
     @base = Base.new
     if params[:id].present?
       @base = Base.find(params[id])

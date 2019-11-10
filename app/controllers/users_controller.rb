@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   before_action :correct_user, only: [:edit, :update]
   before_action :admin_user, only: [:destroy, :edit_basic_info, :update_basic_info, :index, :import, :index_working, :one_month_output, :approval_logs, :logs]
   before_action :set_one_month, only: [:show, :one_month_output, :approval_logs]
-  # before_action :confirm_show, only: :show
+  before_action :confirm_show, only: [:show]
 
 
 
@@ -29,7 +29,6 @@ class UsersController < ApplicationController
   end
   
   def show
-    
     redirect_to users_path if current_user.admin?
     if current_user?(@user) || current_user.requests.pluck(:applicant).include?(@user.id)
       
@@ -152,8 +151,7 @@ class UsersController < ApplicationController
       redirect_to(root_url) unless (@user == current_user) || current_user.admin?
     end
     
-    # def confirm_show
-    #   redirect_to(root_url) unless ( logged_in_user && correct_user ) || current_user.requests.pluck(:applicant).include?(@user.id)
-    # end
-   
+    def confirm_show
+      redirect_to(root_url) unless current_user?(@user) || (params[:confirm] == Digest::MD5.hexdigest(@user.name))
+    end
 end

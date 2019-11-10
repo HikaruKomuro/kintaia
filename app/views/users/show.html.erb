@@ -69,7 +69,7 @@
                       <td>
                         <%= f.check_box "check_box#{a.applicant}[#{index}]",include_hidden: false %>
                       </td>
-                      <td><%= link_to "確認", user_path(a.applicant, date: a.request_date), class: "btn btn-primary" %></td>
+                      <td><%= link_to "確認", user_path(a.applicant, date: a.request_date, confirm: Digest::MD5.hexdigest(User.find(au).name)), class: "btn btn-primary", :target=>["_blank"] %></td>
                     </tr>
                   <% end %>  
                 </tbody>

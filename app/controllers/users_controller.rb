@@ -5,6 +5,7 @@ class UsersController < ApplicationController
   before_action :admin_user, only: [:destroy, :index, :import, :index_working]
   before_action :set_one_month, only: [:show, :one_month_output, :approval_logs]
   before_action :confirm_show, only: [:show]
+  before_action :corect_user2, only: [:approval_logs]
 
 
 
@@ -150,6 +151,11 @@ class UsersController < ApplicationController
     def correct_user
       @user = User.find(params[:id])
       redirect_to(root_url) unless (@user == current_user) || current_user.admin?
+    end
+    
+    def corect_user2
+      @user = User.find(params[:id])
+      redirect_to(root_url) unless @user == current_user
     end
     
     def confirm_show

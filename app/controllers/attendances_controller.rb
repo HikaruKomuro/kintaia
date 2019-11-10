@@ -13,6 +13,7 @@ UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してくださ
     if @attendance.started_at.nil?
       if @attendance.update_attributes(started_at: DateTime.current.change(sec: 0).round_to(15.minutes))
         @attendance.update_attributes(first_started_at: DateTime.current.change(sec: 0).round_to(15.minutes))
+        @user.update_attributes(working: 1)
         flash[:info] = "おはようございます！"
       else
         flash[:danger] = UPDATE_ERROR_MSG
@@ -20,6 +21,7 @@ UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してくださ
     elsif @attendance.finished_at.nil?
       if @attendance.update_attributes!(finished_at: DateTime.current.change(sec: 0).round_to(15.minutes))
         @attendance.update_attributes!(first_finished_at: DateTime.current.change(sec: 0).round_to(15.minutes))
+        @user.update_attributes(working: 0)
         flash[:info] = "お疲れ様でした。"
       else
         flash[:danger] = UPDATE_ERROR_MSG

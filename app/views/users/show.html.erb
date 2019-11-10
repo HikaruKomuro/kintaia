@@ -34,16 +34,18 @@
   <% if superior_user? %>
     <% if @requests1.count >= 1 %>
       <a data-toggle="modal" href="#modalsuperior">
-        <font color="red">【所属長承認申請のお知らせ】<span class="border1"><%= @requests1.count %>件の通知があります</span></font>
-        </a><br>
+        <font color="red">【所属長承認申請のお知らせ】<span class="border1"><%= @requests1.count %>件の通知があります</span></font></a><br>
+    <% else %>
+      <p>【所属長承認申請のお知らせ】</p>
     <% end %>
     
     <div class="modal" id="modalsuperior" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-daialog container">
         <div class="modal-content">
-          <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+          </div>
           <div class="modal-body">
-            
             <%= form_with(url: request_path, method: :delete, local: true) do |f| %>
               <%= f.hidden_field :category, value: 1 %>
             <% @applied_users1.each do |au| %>
@@ -87,12 +89,16 @@
     <% if @requests2.count >= 1 %>
       <a data-toggle="modal" href="#change-worked-time">
         <font color="red">【勤怠変更申請のお知らせ】<span class="border1"><%= @requests2.count %>件の通知があります</span></font></a>
-    <% end %><br>
+    <% else %>
+      <p>【勤怠変更申請のお知らせ】</p>
+    <% end %>
     
     <div class="modal" id="change-worked-time" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-daialog container">
         <div class="modal-content">
-          <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+          </div>
           <div class="modal-body">
             <%= form_with(url: request_path, method: :delete, local: true) do |f| %>
               <%= f.hidden_field :category, value: 2 %>
@@ -173,12 +179,16 @@
     <% if @requests3.count >= 1 %>
       <a data-toggle="modal" href="#overtime">
         <font color="red">【残業申請のお知らせ】<span class="border1"><%= @requests3.count %>件の通知があります</span></font></a><br>
+    <% else %>
+      <p>【残業申請のお知らせ】</p>
     <% end %>
     
     <div class="modal" id="overtime" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-daialog container">
         <div class="modal-content">
-          <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+          </div>
           <div class="modal-body">
             <%= form_with(url: request_path, method: :delete, local: true) do |f| %>
               <%= f.hidden_field :category, value: 3 %>
@@ -355,7 +365,7 @@
           <% end %>
         </td>
         <td>
-          <% if (day.worked_on == Date.current) && day.started_at.nil? && current_user?(@user) %>
+          <% if (day.worked_on == Date.current) && day.started_at.nil? && current_user?(@user) && @user.working == 0 %>
             <%= link_to "出勤", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-block" %>
           <% end %>
         </td>

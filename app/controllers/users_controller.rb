@@ -15,8 +15,6 @@ class UsersController < ApplicationController
   def import
     if User.import(params[:file])
       flash[:success] = "CSVファイルをインポートしました"
-    else
-      flash[:danger] = "CSVファイルをインポートできませんでした"
     end
     redirect_to users_url
   end
@@ -89,11 +87,8 @@ class UsersController < ApplicationController
   end
 
   def update
-    debugger
     @user = User.find(params[:id])
-    debugger
     if @user.update_attributes(user_params)
-      debugger
       flash[:success] = "ユーザー情報を更新しました。"
       redirect_to users_url
     else

@@ -90,7 +90,7 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     if @user.update_attributes(user_params)
       flash[:success] = "ユーザー情報を更新しました。"
-      redirect_to users_url if @user.admin == true
+      redirect_to users_url if current_user.admin?
       redirect_to @user
     else
       render :edit      

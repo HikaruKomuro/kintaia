@@ -31,6 +31,10 @@ class UsersController < ApplicationController
   end
   
   def show
+    
+    redirect_to users_path if current_user.admin?
+    if current_user?(@user) || current_user.requests.pluck(:applicant).include?(@user.id)
+      
     @worked_sum = @attendances.where.not(started_at: nil).count
     @attendance1 = @user.attendances.find_by(worked_on: @first_day)
     @users = User.where(superior: "2")
@@ -41,6 +45,7 @@ class UsersController < ApplicationController
     @applied_users1 = @requests1.pluck(:applicant).uniq
     @applied_users2 = @requests2.pluck(:applicant).uniq
     @applied_users3 = @requests3.pluck(:applicant).uniq
+  end
     
   end
   
@@ -84,7 +89,8 @@ class UsersController < ApplicationController
   end
 
   def update
-    if @user.update_attributes!(user_params)
+    @user = User.find(params[:id])
+    if @user.update_attributes(user_params)
       flash[:success] = "ユーザー情報を更新しました。"
       redirect_to users_url
     else

@@ -9,7 +9,7 @@ class UsersController < ApplicationController
 
 
   def index
-    @users = User.paginate(page: params[:page], per_page: 5).search(params[:search])
+    @users = User.paginate(page: params[:page], per_page: 5).search(params[:search]).order(:id)
   end
 
   def import
@@ -89,8 +89,11 @@ class UsersController < ApplicationController
   end
 
   def update
+    debugger
     @user = User.find(params[:id])
+    debugger
     if @user.update_attributes(user_params)
+      debugger
       flash[:success] = "ユーザー情報を更新しました。"
       redirect_to users_url
     else

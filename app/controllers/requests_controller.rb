@@ -26,7 +26,7 @@ class RequestsController < ApplicationController
 																						  params[:finished_at][key]["(5i)"].to_i)
 							@request.save
 	        		c = params[:request][:category]
-	        		@applied_user.update("status#{c}": 1, "note#{c}": @request.note)
+	        		@applied_user.update(status2: 1, note2: @request.note)
 						end
 					end
 				end
@@ -53,6 +53,8 @@ class RequestsController < ApplicationController
 	    if (over_time = over_end_mtime - basic_end_mtime) > 0
 				@request = @user.requests.new(request_params)
 				@request.save
+				@worked_on = @applied_user.attendances.find_by(worked_on: params[:request][:request_date])
+				@worked_on.update(status3: 1)
 				@worked_on = @applied_user.attendances.find_by(worked_on: params[:request][:request_date])
 				@worked_on.update(finish_time: @request.finish_time, overtime: over_time/60.00, note3: @request.note)
 			end

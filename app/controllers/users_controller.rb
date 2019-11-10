@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy, :edit_basic_info, :update_basic_info, :one_month_output, :approval_logs, :logs, :superior_user?]
   before_action :logged_in_user, only: [:index, :edit, :update, :destroy, :edit_basic_info, :update_basic_info]
   before_action :correct_user, only: [:edit, :update]
-  before_action :admin_user, only: [:destroy, :edit_basic_info, :update_basic_info, :index, :import, :index_working, :one_month_output, :approval_logs, :logs]
+  before_action :admin_user, only: [:destroy, :index, :import, :index_working]
   before_action :set_one_month, only: [:show, :one_month_output, :approval_logs]
   before_action :confirm_show, only: [:show]
 
@@ -89,7 +89,8 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     if @user.update_attributes(user_params)
       flash[:success] = "ユーザー情報を更新しました。"
-      redirect_to users_url
+      redirect_to users_url if @user.admin == true
+      redirect_to @user
     else
       render :edit      
     end

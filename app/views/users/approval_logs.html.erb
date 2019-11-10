@@ -25,8 +25,8 @@
       <% @attendances.each do |a| %>
         <tr>
           <td><%= a.worked_on.strftime("%y/%m/%d") %></td>
-          <td><%= a.first_started_at.try(:strftime, "%H:%M") if a.first_started_at != a.started_at %></td>
-          <td><%= a.first_finished_at.try(:strftime, "%H:%M") if a.first_finished_at != a.started_at%></td>
+          <td><%= a.first_started_at.try(:localtime).try(:strftime, "%H:%M") if a.first_started_at != a.started_at %></td>
+          <td><%= a.first_finished_at.try(:localtime).try(:strftime, "%H:%M") if a.first_finished_at != a.started_at%></td>
           <td><%= a.started_at.try(:strftime, "%H:%M") %></td>
           <td><%= a.finished_at.try(:strftime, "%H:%M") %></td>
           <td><%= User.find(a.superior).name %></td>

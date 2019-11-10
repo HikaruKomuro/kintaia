@@ -24,7 +24,7 @@
 <div class="container user-index">
   <% @users.each do |user| %>
     <p><%= user.name %></p>
-    <% if !current_user.admin? %>
+    <% if !user.admin? %>
       <p><%= link_to "削除", user, data: { confirm: "削除してよろしいですか？"}, class: "btn btn-primary", method: :delete %></p>
     <% end %>
     <a class="btn btn-primary btn-lg" data-toggle="collapse" href="#collapse<%= user.id %>" 

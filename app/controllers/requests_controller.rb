@@ -4,29 +4,30 @@ class RequestsController < ApplicationController
 		if params[:request][:category] == "2"
 			@superior = params[:superior]
 			@superior.each do |key, value|
-				if value.present? && params[:note][key].present? && params[:started_at][key]["(4i)"].present? && params[:started_at][key]["(5i)"].present? && params[:finished_at][key]["(4i)"].present? && params[:finished_at][key]["(5i)"].present?
-				        @user = User.find_by(name: value)
-				        @applied_user = User.find(params[:request][:applicant]).attendances.find_by(worked_on: params[:request_date][key].to_time.localtime)
-								@request = @user.requests.new(request_params)
-								@request.change_date = params[:change_date][key]
-								@request.request_date = params[:request_date][key].to_time.localtime
-								@request.note = params[:note][key]
-								@request.started_at = Time.new( @request.request_date.year.to_s,
-																							  @request.request_date.month.to_s,
-																							  @request.request_date.day.to_s,
-																							  params[:started_at][key]["(4i)"].to_i,
-																							  params[:started_at][key]["(5i)"].to_i)
-							  @request.finished_at = Time.new(@request.request_date.year,
-																							  @request.request_date.month,
-																							  @request.request_date.day,
-																							  params[:finished_at][key]["(4i)"].to_i,
-																							  params[:finished_at][key]["(5i)"].to_i)
-								@request.save
-		        		@applied_user.update(status2: 1, note2: @request.note, superior2: params[:superior][key])
-		        		flash[:success] = "#{params[:request_date][key].to_date.strftime("%-m月%-d日")}　の勤怠の変更を　#{value}　に申請しました。"
-				end
 				if value.present? || params[:note][key].present? || params[:started_at][key]["(4i)"].present? || params[:started_at][key]["(5i)"].present? || params[:finished_at][key]["(4i)"].present? || params[:finished_at][key]["(5i)"].present?
-					flash[:danger] = "#{params[:request_date][key].to_date.strftime("%-m月%-d日")}　の入力項目に不足がありました。再度入力してください。"
+					if value.present? && params[:note][key].present? && params[:started_at][key]["(4i)"].present? && params[:started_at][key]["(5i)"].present? && params[:finished_at][key]["(4i)"].present? && params[:finished_at][key]["(5i)"].present?
+		        @user = User.find_by(name: value)
+		        @applied_user = User.find(params[:request][:applicant]).attendances.find_by(worked_on: params[:request_date][key].to_time.localtime)
+						@request = @user.requests.new(request_params)
+						@request.change_date = params[:change_date][key]
+						@request.request_date = params[:request_date][key].to_time.localtime
+						@request.note = params[:note][key]
+						@request.started_at = Time.new( @request.request_date.year.to_s,
+																					  @request.request_date.month.to_s,
+																					  @request.request_date.day.to_s,
+																					  params[:started_at][key]["(4i)"].to_i,
+																					  params[:started_at][key]["(5i)"].to_i)
+					  @request.finished_at = Time.new(@request.request_date.year,
+																					  @request.request_date.month,
+																					  @request.request_date.day,
+																					  params[:finished_at][key]["(4i)"].to_i,
+																					  params[:finished_at][key]["(5i)"].to_i)
+						@request.save
+        		@applied_user.update(status2: 1, note2: @request.note, superior2: params[:superior][key])
+        		flash[:success] = "勤怠の変更を申請しました。"
+        	else	
+						flash[:danger] = "入力項目の一部に不足がありました。申請中になっていない日を確認して、再度入力してください。"
+					end
 				end
 			end
 		

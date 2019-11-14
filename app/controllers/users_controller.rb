@@ -7,8 +7,6 @@ class UsersController < ApplicationController
   before_action :confirm_show, only: [:show]
   before_action :corect_user2, only: [:approval_logs]
 
-
-
   def index
     @users = User.paginate(page: params[:page], per_page: 5).search(params[:search]).order(:id)
   end

@@ -39,8 +39,16 @@
               <td><%= f.text_field :note, disabled: true, class: 'form-control' %></td>
               <td></td>
             <% else %>  
-              <td><%= f.time_select "started_at[#{index}]", {include_blank: true, minute_step: 15} %></td>
-              <td><%= f.time_select "finished_at[#{index}]",{include_blank: true, minute_step: 15} %></td>
+              <td>
+                <% if day.started_at.present? %>
+                   <span><%= day.started_at.strftime("%-H:%-M") %>　→　</span>
+                <% end %>
+                <%= f.time_select "started_at[#{index}]", {include_blank: true, minute_step: 15} %></td>
+              <td>
+                <% if day.finished_at.present? %>
+                   <span><%= day.finished_at.strftime("%-H:%-M") %>　→　</span>
+                <% end %>
+                <%= f.time_select "finished_at[#{index}]",{include_blank: true, minute_step: 15} %></td>
               <td><%= f.check_box "change_date[#{index}]"%></td>
               <td><%= f.text_field "note[#{index}]", class: 'form-control' %></td>
               <td><%= f.select "superior[#{index}]", @users.where.not(id: @user.id).pluck(:name), include_blank: true %></td>

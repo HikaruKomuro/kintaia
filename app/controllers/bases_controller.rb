@@ -14,10 +14,10 @@ class BasesController < ApplicationController
     @base = Base.new
     @bases = Base.all
     if @base.update_attributes(base_params)
-      flash[:success] = "拠点情報が追加されました"
+      flash[:success] = "拠点情報が追加されました。"
       redirect_to bases_url
     else
-      flash[:danger] = "拠点情報を追加できませんでした"
+      flash[:danger] = "拠点情報を追加できませんでした。"
       render :index
     end
   end
@@ -25,11 +25,11 @@ class BasesController < ApplicationController
   def update
     @base = Base.find(params[:id])
     if @base.update(base_params)
-      flash[:success] = "拠点情報が変更されました"
+      flash[:success] = "拠点情報が変更されました。"
       redirect_to bases_url
     else
       @bases = Base.all
-      flash[:danger] = "拠点情報を変更できませんでした"
+      flash[:danger] = "拠点情報を変更できませんでした。"
       render :index
     end
   end

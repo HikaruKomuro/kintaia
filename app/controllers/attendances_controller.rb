@@ -42,10 +42,10 @@ UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してくださ
         attendance.update_attributes!(item)
       end
     end
-      flash[:success] = "更新に成功しました"
+      flash[:success] = "更新に成功しました。"
       redirect_to user_url(date: params[:date])
     rescue ActiveRecord::RecordInvalid
-      flash[:danger] = "無効な入力があったので、更新がキャンセルされました"
+      flash[:danger] = "無効な入力があったので、更新がキャンセルされました。"
       redirect_to attendances_edit_one_month_user_url(date: params[:date])
   end
   

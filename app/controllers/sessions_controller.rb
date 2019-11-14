@@ -10,14 +10,14 @@ class SessionsController < ApplicationController
       params[:session][:remember_me] == '1' ? remember(user) : forget(user)
       redirect_back_or user
     else
-      flash.now[:danger] = "ログインできませんでした"
+      flash.now[:danger] = "ログインできませんでした。"
       render :new
     end
   end
   
   def destroy
     log_out if logged_in?
-    flash[:success] = "ログアウトしました"
+    flash[:success] = "ログアウトしました。"
     redirect_to root_url
   end
   

@@ -8,7 +8,7 @@
 
 
 User.create!(name: "管理者",
-             email: "sample@email.com",
+             email: "sample@example.com",
              password: "password",
              password_confirmation: "password",
              admin: true,
@@ -16,7 +16,7 @@ User.create!(name: "管理者",
 
 2.times do |n|
   name  = Faker::Name.name
-  email = "sample#{n+1}@email.com"
+  email = "sample#{n+1}@example.com"
   password = "password"
   employee_number = "#{(n+1)*111}"
   uid = "abc#{(n+1)*111}"
@@ -32,7 +32,7 @@ end
 
 2.times do |n|
   name  = "上長#{n+1}"
-  email = "sample#{n+10}@email.com"
+  email = "sample#{n+10}@example.com"
   password = "password"
   employee_number = "#{(n+1)*1111}"
   uid = "def#{(n+1)*1111}"

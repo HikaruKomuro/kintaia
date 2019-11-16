@@ -29,7 +29,7 @@
           <td><%= a.first_finished_at.try(:localtime).try(:strftime, "%H:%M") if a.first_finished_at != a.finished_at %></td>
           <td><%= a.started_at.try(:strftime, "%H:%M") %></td>
           <td><%= a.finished_at.try(:strftime, "%H:%M") %></td>
-          <td><%= User.find(a.superior).name %></td>
+          <td><%= User.find_by(id: a.superior).try(:name) %></td>
           <td><%= a.approval_date.strftime("%y/%m/%d") %></td>
         </tr>
       <% end %>

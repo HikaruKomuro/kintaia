@@ -41,12 +41,12 @@
             <% else %>  
               <td>
                 <% if day.started_at.present? %>
-                   <span><%= day.started_at.strftime("%-H:%-M") %>　→　</span>
+                   <span><%= day.started_at.strftime("%-H:%M") %>　→　</span>
                 <% end %>
                 <%= f.time_select "started_at[#{index}]", {include_blank: true, minute_step: 15} %></td>
               <td>
                 <% if day.finished_at.present? %>
-                   <span><%= day.finished_at.strftime("%-H:%-M") %>　→　</span>
+                   <span><%= day.finished_at.strftime("%-H:%M") %>　→　</span>
                 <% end %>
                 <%= f.time_select "finished_at[#{index}]",{include_blank: true, minute_step: 15} %></td>
               <td><%= f.check_box "change_date[#{index}]"%></td>

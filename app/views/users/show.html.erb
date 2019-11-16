@@ -249,7 +249,7 @@
   
   <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-primary" %>
   <%= link_to "CSVを出力", one_month_output_user_path(format: :csv), class: "btn btn-primary" %>
-  <%= link_to "勤怠修正ログ（承認済）", approval_logs_user_path, class: "btn btn-primary" %>
+  <%= link_to "勤怠修正ログ（承認済）", approval_logs_user_path(@user), class: "btn btn-primary" %>
   
 <% end %>
 

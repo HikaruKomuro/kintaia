@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :edit, :update, :destroy, :edit_basic_info, :update_basic_info, :one_month_output, :approval_logs, :logs, :superior_user?]
+  before_action :set_user, only: [:show, :edit, :update, :destroy, :edit_basic_info, :update_basic_info, :one_month_output, :approval_logs, :logs, :superior_user?, :corect_user2]
   before_action :logged_in_user, only: [:index, :edit, :update, :destroy, :edit_basic_info, :update_basic_info]
   before_action :correct_user, only: [:edit, :update]
   before_action :admin_user, only: [:destroy, :index, :import, :index_working]
@@ -29,19 +29,17 @@ class UsersController < ApplicationController
   def show
     redirect_to users_path if current_user.admin?
     if current_user?(@user) || current_user.requests.pluck(:applicant).include?(@user.id)
-      
-    @worked_sum = @attendances.where.not(started_at: nil).count
-    @attendance1 = @user.attendances.find_by(worked_on: @first_day)
-    @users = User.where(superior: "2")
-    @request = Request.new
-    @requests1 = @user.requests.where(category: 1).order(:applicant)
-    @requests2 = @user.requests.where(category: 2).order(:applicant)
-    @requests3 = @user.requests.where(category: 3).order(:applicant)
-    @applied_users1 = @requests1.pluck(:applicant).uniq
-    @applied_users2 = @requests2.pluck(:applicant).uniq
-    @applied_users3 = @requests3.pluck(:applicant).uniq
-  end
-    
+      @worked_sum = @attendances.where.not(started_at: nil).count
+      @attendance1 = @user.attendances.find_by(worked_on: @first_day)
+      @users = User.where(superior: "2")
+      @request = Request.new
+      @requests1 = @user.requests.where(category: 1).order(:applicant)
+      @requests2 = @user.requests.where(category: 2).order(:applicant)
+      @requests3 = @user.requests.where(category: 3).order(:applicant)
+      @applied_users1 = @requests1.pluck(:applicant).uniq
+      @applied_users2 = @requests2.pluck(:applicant).uniq
+      @applied_users3 = @requests3.pluck(:applicant).uniq
+    end
   end
   
   def one_month_output
@@ -119,11 +117,6 @@ class UsersController < ApplicationController
   def search
     @users = User.search(params[:search])
   end
-  
-  
-  
- 
-  
  
   
   private
@@ -146,8 +139,6 @@ class UsersController < ApplicationController
       end
     end
     
-    
-   
     # 正しいユーザーかどうか確認
     def correct_user
       @user = User.find(params[:id])
@@ -155,11 +146,11 @@ class UsersController < ApplicationController
     end
     
     def corect_user2
-      @user = User.find(params[:id])
       redirect_to(root_url) unless @user == current_user
     end
     
     def confirm_show
       redirect_to(root_url) unless current_user?(@user) || (params[:confirm] == Digest::MD5.hexdigest(@user.name))
     end
+    
 end

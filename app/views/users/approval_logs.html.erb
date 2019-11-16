@@ -24,13 +24,13 @@
     <tbody>
       <% @attendances.each do |a| %>
         <tr>
-          <td><%= a.worked_on.strftime("%y/%m/%d") %></td>
+          <td><%= a.worked_on.try(:strftime, "%y/%m/%d") %></td>
           <td><%= a.first_started_at.try(:localtime).try(:strftime, "%H:%M") if a.first_started_at != a.started_at %></td>
           <td><%= a.first_finished_at.try(:localtime).try(:strftime, "%H:%M") if a.first_finished_at != a.finished_at %></td>
           <td><%= a.started_at.try(:strftime, "%H:%M") %></td>
           <td><%= a.finished_at.try(:strftime, "%H:%M") %></td>
           <td><%= User.find_by(id: a.superior).try(:name) %></td>
-          <td><%= a.approval_date.strftime("%y/%m/%d") %></td>
+          <td><%= a.approval_date.try(:strftime, "%y/%m/%d") %></td>
         </tr>
       <% end %>
     </tbody>

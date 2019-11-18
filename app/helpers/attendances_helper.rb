@@ -3,8 +3,10 @@ module AttendancesHelper
   def worked_time(start1, finish1, change_date)
     if change_date == 1
       format("%.2f", (finish1 - start1)/3600)
-    else
+    elsif (((finish1.hour*60) + finish1.min - (start1.hour*60) - start1.min)/60) >= 0
       format("%.2f", (finish1.hour*60 + finish1.min - start1.hour*60 - start1.min)/60.00)
+    else
+      format("%.2f", ((finish1.hour*60) + finish1.min + (24*60) - (start1.hour*60) - start1.min)/60.00)
     end
   end
   
